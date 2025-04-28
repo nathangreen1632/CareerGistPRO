@@ -22,23 +22,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "1.8.2",
-    "axios-error": "^1.0.4",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^3.3.2",
     "openai": "^4.83.0",
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "rate-limit-redis": "^4.2.0",
     "redis": "^4.7.0",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
-    "@types/axios": "^0.9.36",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.6",
