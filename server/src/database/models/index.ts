@@ -1,0 +1,34 @@
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+
+import { initUserModel, User } from './User.js';
+import { initFavoriteModel, Favorite } from './Favorites.js';
+import { initSavedJobModel, SavedJob } from './SavedJobs.js';
+import { initJobModel, Job } from './Job.js';
+
+dotenv.config();
+
+const sequelize = new Sequelize(process.env.DATABASE_URL!, {
+  dialect: 'postgres',
+  logging: false,
+});
+
+// Initialize all models
+initUserModel(sequelize);
+initFavoriteModel(sequelize);
+initSavedJobModel(sequelize);
+initJobModel(sequelize);
+
+// 🛠 Setup associations AFTER models initialized
+Favorite.belongsTo(Job, { foreignKey: 'jobId', targetKey: 'id' });
+Job.hasMany(Favorite, { foreignKey: 'jobId', sourceKey: 'id' });
+
+const db = {
+  sequelize,
+  User,
+  Favorite,
+  SavedJob,
+  Job,
+};
+
+export default db;
