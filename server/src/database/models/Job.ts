@@ -1,28 +1,35 @@
-// server/src/database/models/Job.ts
-
 import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 
 interface JobAttributes {
   id: string;
+  sourceId?: string;
   title: string;
   company?: string;
   location?: string;
   description: string;
   summary?: string;
   url?: string;
+  logoUrl?: string;     // ✅ Moved here for consistency
+  postedAt?: string;    // ✅ Moved here for consistency
   saved: boolean;
 }
 
-type JobCreationAttributes = Optional<JobAttributes, 'id' | 'company' | 'location' | 'summary' | 'url' | 'saved'>;
+type JobCreationAttributes = Optional<
+  JobAttributes,
+  'id' | 'sourceId' | 'company' | 'location' | 'summary' | 'url' | 'logoUrl' | 'postedAt' | 'saved'
+>;
 
 export class Job extends Model<JobAttributes, JobCreationAttributes> implements JobAttributes {
   public id!: string;
+  public sourceId?: string;
   public title!: string;
   public company?: string;
   public location?: string;
   public description!: string;
   public summary?: string;
   public url?: string;
+  public logoUrl?: string;
+  public postedAt?: string;
   public saved!: boolean;
 
   public readonly createdAt!: Date;
@@ -37,13 +44,46 @@ export function initJobModel(sequelize: Sequelize): void {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
       },
-      title: { type: DataTypes.STRING, allowNull: false },
-      company: { type: DataTypes.STRING, allowNull: true },
-      location: { type: DataTypes.STRING, allowNull: true },
-      description: { type: DataTypes.TEXT, allowNull: false },
-      summary: { type: DataTypes.TEXT, allowNull: true },
-      url: { type: DataTypes.STRING, allowNull: true },
-      saved: { type: DataTypes.BOOLEAN, defaultValue: false },
+      sourceId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      company: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      location: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      summary: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      url: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      logoUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      postedAt: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      saved: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,
