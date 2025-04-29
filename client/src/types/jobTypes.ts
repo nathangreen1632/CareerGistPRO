@@ -58,7 +58,7 @@ export interface UnifiedJob {
   salaryMax?: number;
   salaryPeriod?: string;
   benefits?: string[];
-  isRemote?: boolean;
+  isRemote?: string;
   postedAt?: string | null;
   logoUrl?: string;
   url?: string;
