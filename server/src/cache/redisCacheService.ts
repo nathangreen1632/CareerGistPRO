@@ -10,8 +10,7 @@ const redis = new Redis({
   tls: process.env.REDIS_TLS ? {} : undefined as any,
 });
 
-redis.on('connect', () => console.log('✅ Redis connected'));
-redis.on('reconnecting', () => console.log('🔄 Reconnecting to Redis...'));
+
 redis.on('error', (err) => console.error('❌ Redis error:', err));
 redis.on('end', () => console.warn('⚠️ Redis connection closed'));
 
