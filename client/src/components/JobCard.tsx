@@ -132,8 +132,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }, [id, description, summary, summarizeJob]);
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-3xl mx-auto my-4">
-      <div className="flex flex-col space-y-2">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-3xl mx-auto my-4">
+      <div className="bg-gray-800 flex flex-col space-y-2">
         {logoUrl && (
           <img src={logoUrl} alt={`${company} logo`} className="h-12 w-auto object-contain mb-2" />
         )}
