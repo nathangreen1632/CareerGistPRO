@@ -3,6 +3,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import SearchBar from "./SearchBar";
 
 const Layout: React.FC = () => {
   const { token, logout } = useAuth();
@@ -10,7 +11,7 @@ const Layout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -23,23 +24,22 @@ const Layout: React.FC = () => {
           </Link>
           <nav className="flex space-x-6">
             <Link to="/" className="text-gray-600 dark:text-gray-300 hover:underline">Home</Link>
-            <Link to="/register" className="text-gray-600 dark:text-gray-300 hover:underline">Register</Link>
-            <Link to="/login" className="text-gray-600 dark:text-gray-300 hover:underline">Login</Link>
-            <Link to="/favorites" className="text-gray-600 dark:text-gray-300 hover:underline">Favorites</Link>
-            <Link to="/saved" className="text-gray-600 dark:text-gray-300 hover:underline">Saved Jobs</Link>
-
-
-          {token ? (
-              <button
-                onClick={handleLogout}
-                className="text-gray-600 dark:text-gray-300 hover:underline focus:outline-none"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link to="/login" className="text-gray-600 dark:text-gray-300 hover:underline">
-                Login
-              </Link>
+            {!token && (
+              <>
+                <Link to="/register" className="text-gray-600 dark:text-gray-300 hover:underline">Register</Link>
+                <Link to="/login" className="text-gray-600 dark:text-gray-300 hover:underline">Login</Link>
+              </>
+            )}
+            {token && (
+              <>
+                <Link to="/favorites" className="text-gray-600 dark:text-gray-300 hover:underline">Favorites</Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-600 dark:text-gray-300 hover:underline focus:outline-none"
+                >
+                  Logout
+                </button>
+              </>
             )}
           </nav>
         </div>
@@ -47,6 +47,7 @@ const Layout: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-6 py-8">
+        <SearchBar />
         <Outlet />
       </main>
 
