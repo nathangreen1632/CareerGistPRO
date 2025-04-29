@@ -1,17 +1,24 @@
-// client/src/store/useJobStore.ts
-
 import { create } from 'zustand';
-import { normalizeJobData } from '../utils/normalizeJobData';
-import { JobDetails, UnifiedJob } from '../types/jobTypes'; // ✅ Clean import
+import { normalizeAdzunaData } from '../utils/normalizeAdzunaData'; // 🛠 switched to Adzuna normalizer
+import { UnifiedJob } from '../types/jobTypes'; // ✅ Clean import
+
+interface SearchFilters {
+  title?: string;
+  location?: string;
+  radius?: number;
+}
 
 interface JobStore {
-  jobs: UnifiedJob[]; // ✅ Now using UnifiedJob
+  jobs: UnifiedJob[];
   currentPage: number;
   hasMore: boolean;
   isLoading: boolean;
   error: string | null;
+  searchFilters: SearchFilters;
   fetchJobs: () => Promise<void>;
   summarizeJob: (jobId: string, description: string) => Promise<void>;
+  updateSearchFilters: (filters: SearchFilters) => void;
+  resetSearchFilters: () => void;
 }
 
 export const useJobStore = create<JobStore>((set, get) => ({
@@ -20,16 +27,24 @@ export const useJobStore = create<JobStore>((set, get) => ({
   hasMore: true,
   isLoading: false,
   error: null,
+  searchFilters: {},
 
   fetchJobs: async () => {
-    const { currentPage, jobs } = get();
+    const { currentPage, jobs, searchFilters } = get();
     try {
       set({ isLoading: true, error: null });
 
-      const response = await fetch(`/api/jobs?page=${currentPage}`);
+      const queryParams = new URLSearchParams({
+        page: String(currentPage),
+        ...(searchFilters.title ? { title: searchFilters.title } : {}),
+        ...(searchFilters.location ? { location: searchFilters.location } : {}),
+        ...(searchFilters.radius ? { radius: String(searchFilters.radius) } : {}),
+      }).toString();
+
+      const response = await fetch(`/api/jobs?${queryParams}`);
       const data = await response.json();
 
-      const normalizedJobs = normalizeJobData(data.jobs as JobDetails[]); // ✅ Normalized properly
+      const normalizedJobs = normalizeAdzunaData(data.jobs ?? []); // 🛠 updated to Adzuna
 
       set({
         jobs: [...jobs, ...normalizedJobs],
@@ -49,7 +64,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem('token') ?? ''}`,
         },
         body: JSON.stringify({ jobId, description }),
       });
@@ -64,5 +79,28 @@ export const useJobStore = create<JobStore>((set, get) => ({
     } catch (error: any) {
       console.error('❌ Failed to summarize job:', error);
     }
+  },
+
+  updateSearchFilters: (filters: SearchFilters) => {
+    set((state) => ({
+      ...state,
+      searchFilters: {
+        ...state.searchFilters,
+        ...filters,
+      },
+      jobs: [],
+      currentPage: 1,
+      hasMore: true,
+    }));
+  },
+
+  resetSearchFilters: () => {
+    set((state) => ({
+      ...state,
+      searchFilters: {},
+      jobs: [],
+      currentPage: 1,
+      hasMore: true,
+    }));
   },
 }));
