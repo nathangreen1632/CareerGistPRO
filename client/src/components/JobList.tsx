@@ -1,11 +1,13 @@
+// client/src/components/JobList.tsx
+
 import { useEffect, useRef, useCallback } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from './JobCard';
-import SkeletonLoader from "./SkeletonLoader";
-import { UnifiedJob } from "../types/jobTypes";
+import SkeletonLoader from './SkeletonLoader';
+import { UnifiedJob } from '../types/jobTypes';
 
 const JobList = () => {
-  const { jobs, fetchJobs, isLoading, hasMore, summarizeJob } = useJobStore(); // 🛠 include summarizeJob
+  const { jobs, fetchJobs, isLoading, hasMore, summarizeJob, searchFilters } = useJobStore();
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastJobRef = useCallback((node: HTMLDivElement | null) => {
@@ -14,7 +16,7 @@ const JobList = () => {
 
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasMore) {
-        void fetchJobs();
+        void fetchJobs(); // ✅ Will refetch using the current searchFilters automatically
       }
     });
 
@@ -22,50 +24,45 @@ const JobList = () => {
   }, [isLoading, hasMore, fetchJobs]);
 
   useEffect(() => {
+    // 👇 When search filters change, reset jobs and refetch from page 1
     void fetchJobs();
-  }, []);
+  }, [searchFilters]);
 
   useEffect(() => {
-    // 🛠 New: Summarize all jobs that don't already have a summary
+    // ✅ Summarize only jobs without a summary
     jobs.forEach((job) => {
       if (!job.summary && job.description) {
         void summarizeJob(job.id, job.description);
       }
     });
-  }, [jobs, summarizeJob]); // Re-run when jobs load
+  }, [jobs, summarizeJob]);
 
   return (
     <div className="flex flex-col items-center space-y-4 py-8">
       {jobs.map((job: UnifiedJob, index) => {
+        const jobCard = (
+          <JobCard
+            key={job.id}
+            id={job.id}
+            title={job.title}
+            company={job.company}
+            location={job.location}
+            description={job.description}
+            summary={job.summary}
+            applyLink={job.applyLink}
+          />
+        );
+
         if (index === jobs.length - 1) {
           return (
             <div ref={lastJobRef} key={job.id}>
-              <JobCard
-                id={job.id}
-                title={job.title}
-                company={job.company}
-                location={job.location}
-                description={job.description}
-                summary={job.summary}
-                applyLink={job.applyLink}
-              />
+              {jobCard}
             </div>
           );
-        } else {
-          return (
-            <JobCard
-              key={job.id}
-              id={job.id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              description={job.description}
-              summary={job.summary}
-              applyLink={job.applyLink}
-            />
-          );
         }
+        return jobCard;
       })}
+
       {isLoading && (
         <div className="flex flex-col items-center space-y-4">
           {[...Array(3)].map((_, index) => (
@@ -80,7 +77,8 @@ const JobList = () => {
           ))}
         </div>
       )}
-      {!hasMore && (
+
+      {!hasMore && !isLoading && (
         <p className="text-gray-500 dark:text-gray-400">No more jobs.</p>
       )}
     </div>
