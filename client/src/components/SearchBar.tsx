@@ -47,6 +47,7 @@ const SearchBar: React.FC = () => {
         <option value={20}>20 miles</option>
         <option value={25}>25 miles</option>
         <option value={50}>50 miles</option>
+        <option value={100}>100 miles</option>
       </select>
       <button
         onClick={handleSearch}
@@ -56,7 +57,7 @@ const SearchBar: React.FC = () => {
       </button>
       <button
         onClick={handleReset}
-        className="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg shadow-md transition"
+        className="px-6 py-2 bg-red-500 hover:bg-red-700 text-white rounded-lg shadow-md transition"
       >
         Reset
       </button>
