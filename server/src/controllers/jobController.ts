@@ -5,48 +5,53 @@ import { getCache, setCache } from '../cache/redisCacheService.js';
 
 const { Job, User } = db;
 
-// GET /jobs?page=1
-// GET /jobs?page=1
+// server/src/controllers/jobController.ts
+
 export const getPaginatedJobs = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
-  const query = 'software engineer'; // Default query for now
+  const title = (req.query.title as string) || 'Full Stack Engineer';
+  const location = (req.query.location as string) || 'United States';
+  const radius = parseInt(req.query.radius as string) || 25;
 
-  const cacheKey = `jobs:${query}:${page}`;
+  const cacheKey = `adzuna:jobs:${title}:${location}:${radius}:${page}`;
 
   try {
     // 1. Check Redis cache first
     const cached = await getCache(cacheKey);
     if (cached) {
       console.log('📦 Serving jobs from cache:', cacheKey);
-      const parsedCache = typeof cached === 'string' ? JSON.parse(cached) : cached;
-      res.json(parsedCache);
+      res.json(cached); // ✅ No JSON.parse anymore
       return;
     }
 
-    // 2. Fetch from JSearch API
-    const response = await fetch(`${process.env.JSEARCH_API_URL}?query=${encodeURIComponent(query)}&page=${page}`, {
+
+    // 2. Fetch from Adzuna API
+    const country = process.env.ADZUNA_COUNTRY ?? 'us';
+    const appId = process.env.ADZUNA_APP_ID!;
+    const appKey = process.env.ADZUNA_APP_KEY!;
+
+    const encodedTitle = encodeURIComponent(title);
+    const encodedLocation = encodeURIComponent(location);
+
+    const response = await fetch(`https://api.adzuna.com/v1/api/jobs/${country}/search/${page}?app_id=${appId}&app_key=${appKey}&what=${encodedTitle}&where=${encodedLocation}&distance=${radius}`, {
       method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY!,
-        'X-RapidAPI-Host': process.env.RAPIDAPI_HOST!,
-      },
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`❌ JSearch API Error [${response.status}]:`, errorText);
-      res.status(response.status).json({ error: `Failed to fetch jobs from JSearch API. Status: ${response.status}` });
+      console.error(`❌ Adzuna API Error [${response.status}]:`, errorText);
+      res.status(response.status).json({ error: `Failed to fetch jobs from Adzuna API. Status: ${response.status}` });
       return;
     }
 
-    const data = await response.json() as { data?: any[]; total_pages?: number };
+    const data = await response.json() as { results?: any[]; count?: number };
 
-    console.log('🌍 Raw JSearch API Payload:\n', JSON.stringify(data, null, 2)); // ✅ Pretty-printed full payload
+    console.log('🌍 Raw Adzuna API Payload:\n', JSON.stringify(data, null, 2)); // ✅ Pretty-printed full payload
 
     const result = {
-      jobs: data.data ?? [],
+      jobs: data.results ?? [],
       currentPage: page,
-      totalPages: data.total_pages ?? 10,
+      totalPages: Math.ceil((data.count ?? 0) / 10), // Adzuna returns 10 jobs per page by default
     };
 
     await setCache(cacheKey, result, 60 * 20); // Cache for 20 minutes
