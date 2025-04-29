@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 
 import { initUserModel, User } from './User.js';
 import { initFavoriteModel, Favorite } from './Favorites.js';
-import { initSavedJobModel, SavedJob } from './SavedJobs.js';
 import { initJobModel, Job } from './Job.js';
 
 dotenv.config();
@@ -16,7 +15,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL!, {
 // Initialize all models
 initUserModel(sequelize);
 initFavoriteModel(sequelize);
-initSavedJobModel(sequelize);
 initJobModel(sequelize);
 
 // 🛠 Setup associations AFTER models initialized
@@ -27,7 +25,6 @@ const db = {
   sequelize,
   User,
   Favorite,
-  SavedJob,
   Job,
 };
 
