@@ -113,7 +113,7 @@ const Favorites: React.FC = () => {
               logoUrl={job.logoUrl}
               isFavorited={true}
               onUnfavorite={() =>
-                setFavoriteJobs((prev) => prev.filter((j) => j.id !== job.id))
+                setFavoriteJobs((prev) => prev.filter((j: UnifiedJob): boolean => j.id !== job.id))
               }
             />
           </div>
