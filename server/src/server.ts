@@ -7,7 +7,6 @@ import { fileURLToPath } from 'url';
 
 import authRoutes from './routes/authRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
-import savedJobRoutes from './routes/savedJobRoutes.js';
 import summaryRoutes from './routes/summaryRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import db from './database/models/index.js';
@@ -34,7 +33,6 @@ app.use('/api/summaries', summaryRoutes);
 
 // ✅ Protected API routes (authentication required)
 app.use('/api/favorites', authenticateToken, favoriteRoutes);
-app.use('/api/saved-jobs', authenticateToken, savedJobRoutes);
 
 
 // ✅ Universal catch-all route for React Router
