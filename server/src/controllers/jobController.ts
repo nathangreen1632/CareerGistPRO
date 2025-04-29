@@ -19,7 +19,6 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
     // 1. Check Redis cache first
     const cached = await getCache(cacheKey);
     if (cached) {
-      console.log('📦 Serving jobs from cache:', cacheKey);
       res.json(cached); // ✅ No JSON.parse anymore
       return;
     }
@@ -45,8 +44,6 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
     }
 
     const data = await response.json() as { results?: any[]; count?: number };
-
-    console.log('🌍 Raw Adzuna API Payload:\n', JSON.stringify(data, null, 2)); // ✅ Pretty-printed full payload
 
     const result = {
       jobs: data.results ?? [],
