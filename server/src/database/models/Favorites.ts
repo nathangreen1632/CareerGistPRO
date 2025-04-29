@@ -5,14 +5,22 @@ interface FavoriteAttributes {
   userId: string;
   jobId: string;
   title: string;
-  company?: string;
-  location?: string;
+  company?: string | undefined;
+  location?: string | undefined;
   description: string;
-  summary?: string;
+  summary?: string | undefined;
   url: string;
+  logoUrl?: string | undefined;       // ✅ NEW
+  postedAt?: string | undefined;      // ✅ NEW
+  salaryMin?: number | undefined;     // ✅ NEW
+  salaryMax?: number | undefined;     // ✅ NEW
+  salaryPeriod?: string | undefined;  // ✅ NEW
 }
 
-type FavoriteCreationAttributes = Optional<FavoriteAttributes, 'id' | 'company' | 'location' | 'summary'>;
+type FavoriteCreationAttributes = Optional<
+  FavoriteAttributes,
+  'id' | 'company' | 'location' | 'summary' | 'logoUrl' | 'postedAt' | 'salaryMin' | 'salaryMax' | 'salaryPeriod'
+>;
 
 export class Favorite extends Model<FavoriteAttributes, FavoriteCreationAttributes> implements FavoriteAttributes {
   public id!: string;
@@ -24,6 +32,11 @@ export class Favorite extends Model<FavoriteAttributes, FavoriteCreationAttribut
   public description!: string;
   public summary?: string;
   public url!: string;
+  public logoUrl?: string;     // ✅ NEW
+  public postedAt?: string;   // ✅ NEW
+  public salaryMin?: number;  // ✅ NEW
+  public salaryMax?: number;  // ✅ NEW
+  public salaryPeriod?: string; // ✅ NEW
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -66,6 +79,27 @@ export function initFavoriteModel(sequelize: Sequelize): void {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      logoUrl: {
+        type: DataTypes.TEXT,   // ✅ NEW
+        allowNull: true,
+      },
+      postedAt: {
+        type: DataTypes.STRING, // ✅ NEW
+        allowNull: true,
+      },
+      salaryMin: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      salaryMax: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+      },
+      salaryPeriod: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
     },
     {
       sequelize,
