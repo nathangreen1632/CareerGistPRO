@@ -55,6 +55,12 @@ const Home: React.FC = () => {
         description={job.description}
         summary={job.summary}
         applyLink={job.applyLink}
+        salaryMin={job.salaryMin}
+        salaryMax={job.salaryMax}
+        salaryPeriod={job.salaryPeriod}
+        benefits={job.benefits}
+        postedAt={job.postedAt ?? undefined}
+        logoUrl={job.logoUrl}
         />
       ))}
       {isLoading && jobs.length > 0 && (
