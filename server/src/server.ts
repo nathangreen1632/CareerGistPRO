@@ -43,13 +43,11 @@ app.get('*', (_req, res) => {
 const startServer = async (): Promise<void> => {
   try {
     await db.sequelize.authenticate();
-    console.log('✅ PostgreSQL connection established');
 
     await db.sequelize.sync({ alter: true });
-    console.log('✅ Sequelize models synchronized');
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`-→ Server running at http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('❌ Error during server startup:', error);
