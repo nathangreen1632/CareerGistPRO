@@ -15,7 +15,8 @@
     "client:dev": "cd client && npm run dev",
     "build": "if [ -d './server' ]; then cd server && npm run build; cd ..; fi && cd client && npm run build",
     "seed": "cd server && npm run seed",
-    "render-build": "npm install && npm run build"
+    "render-build": "npm install && npm run build",
+    "migrate": "npx sequelize-cli db:migrate --migrations-path dist/migrations --config src/config/database.cjs"
   },
   "keywords": [],
   "author": "",
