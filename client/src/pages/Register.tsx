@@ -29,7 +29,7 @@ const Register: React.FC = () => {
         toast.success('Registered successfully!');
         navigate('/'); // Redirect after successful registration
       } else {
-        toast.error(data.message || 'Registration failed');
+        toast.error(data.message ?? 'Registration failed');
       }
     } catch (error) {
       console.error(error);
@@ -45,7 +45,7 @@ const Register: React.FC = () => {
         <input
           type="text"
           placeholder="First Name"
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
@@ -53,7 +53,7 @@ const Register: React.FC = () => {
         <input
           type="text"
           placeholder="Last Name"
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
@@ -61,7 +61,7 @@ const Register: React.FC = () => {
         <input
           type="email"
           placeholder="Email"
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -69,7 +69,7 @@ const Register: React.FC = () => {
         <input
           type="password"
           placeholder="Password"
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
