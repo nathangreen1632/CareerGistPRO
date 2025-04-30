@@ -27,7 +27,7 @@ const Login: React.FC = () => {
         toast.success('Logged in successfully!');
         navigate('/'); // Redirect to homepage or dashboard
       } else {
-        toast.error(data.message || 'Login failed');
+        toast.error(data.message ?? 'Login failed');
       }
     } catch (error) {
       console.error(error);
@@ -43,7 +43,7 @@ const Login: React.FC = () => {
         <input
           type="email"
           placeholder="Email"
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
@@ -51,7 +51,7 @@ const Login: React.FC = () => {
         <input
           type="password"
           placeholder="Password"
-          className="p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
