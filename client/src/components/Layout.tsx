@@ -20,8 +20,8 @@ const Layout: React.FC = () => {
       <header className="bg-white dark:bg-gray-800 shadow-md">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold">
-            <span className="text-gray-800 dark:text-white">Career</span>
-            <span className="text-gray-800 dark:text-red-500">Gist</span>
+            <span className="text-gray-800 dark:text-white">CareerGist</span>
+            <span className="text-gray-800 dark:text-red-500">PRO</span>
           </Link>
 
           <nav className="flex space-x-6">
