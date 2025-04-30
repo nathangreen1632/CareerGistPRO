@@ -6,11 +6,11 @@
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/server.js --ignore client",
+    "start": "node dist/server.js",
     "dev": "npx nodemon --watch src --ext ts,json,js --exec 'npx tsc && node dist/server.js'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node dist/seeds/index.js",
-    "migrate": "npx sequelize-cli db:migrate --migrations-path dist/migrations --config src/config/database.cjs"
+    "migrate": "npx sequelize-cli db:migrate --migrations-path dist/migrations --config dist/config/database.cjs"
   },
   "nodemonConfig": {
     "watch": [
