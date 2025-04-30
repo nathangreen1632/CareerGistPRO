@@ -17,7 +17,7 @@ const Layout: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Navbar */}
-      <header className="bg-white dark:bg-gray-800 shadow-md">
+
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold">
             <span className="text-gray-800 dark:text-white">CareerGist</span>
@@ -45,7 +45,6 @@ const Layout: React.FC = () => {
             )}
           </nav>
         </div>
-      </header>
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-6 py-8">
