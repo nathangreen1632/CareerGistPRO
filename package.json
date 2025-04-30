@@ -6,7 +6,9 @@
   "scripts": {
     "install": "cd server && npm install && cd ../client && npm install",
     "build": "cd server && npm run build && cd ../client && npm run build",
-    "start": "cd server && npm run migrate && npm start",
+    "start": "npm run migrate && cd server && npm start",
+    "migrate": "npx sequelize-cli db:migrate --migrations-path server/dist/migrations --config server/dist/config/database.cjs",
+    "migrate:undo": "npx sequelize-cli db:migrate:undo --migrations-path server/dist/migrations --config server/dist/config/database.cjs",
     "start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
     "start:full": "concurrently \"redis-server\" \"sleep 2 && npm run start:dev\"",
     "server": "cd server && npm start",
@@ -16,10 +18,9 @@
     "client:dev": "cd client && npm run dev",
     "localbuild": "if [ -d './server' ]; then cd server && npm run build; cd ..; fi && cd client && npm run build",
     "seed": "cd server && npm run seed",
-    "render-build": "npm install && npm run build",
-    "migrate": "npx sequelize-cli db:migrate --migrations-path dist/migrations --config src/config/database.cjs",
-    "migrate:undo": "npx sequelize-cli db:migrate:undo --migrations-path dist/migrations --config dist/config/database.cjs"
+    "render": "npm install && npm run build"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
