@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import db from '../database/models/index.js';
 import fetch from 'node-fetch';
 import { getCache, setCache } from '../cache/redisCacheService.js';
+import { logUserAnalytics } from '../helpers/logUserAnalytics.js';
+
 
 const { Job, User } = db;
 
@@ -53,7 +55,27 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
 
     await setCache(cacheKey, result, 60 * 20); // Cache for 20 minutes
 
+    const salaryMin = req.query.salaryMin ? Number(req.query.salaryMin) : undefined;
+    const salaryMax = req.query.salaryMax ? Number(req.query.salaryMax) : undefined;
+
+    const userId = (req as any).user?.id;
+
+    if (userId) {
+      await logUserAnalytics({
+        userId,
+        action: 'search',
+        query: title,
+        location,
+        ...(salaryMin !== undefined ? { salaryMin } : {}),
+        ...(salaryMax !== undefined ? { salaryMax } : {}),
+      });
+
+      console.log('✅ User analytics logged successfully');
+    }
+
+    console.log('✅ Adzuna API response:', result);
     res.json(result);
+
 
   } catch (err: any) {
     console.error('❌ Unexpected Server Error fetching jobs:', err);
