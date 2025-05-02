@@ -1,8 +1,22 @@
 // client/src/utils/normalizeAdzunaData.ts
 
-import { UnifiedJob } from '../types/jobTypes';
-
-export function normalizeAdzunaData(jobs: any[]): UnifiedJob[] {
+export function normalizeAdzunaData(jobs: any[]): {
+  id: any;
+  title: any;
+  company: any;
+  location: any;
+  description: any;
+  summary: string;
+  applyLink: any;
+  createdAt: any;
+  postedAt: any;
+  isRemote: boolean | undefined;
+  salaryMin: any;
+  salaryMax: any;
+  salaryPeriod: any;
+  benefits: any[] | undefined;
+  logoUrl: undefined
+}[] {
   return jobs.map((job) => ({
     id: job.id ?? '',
     title: job.title ?? 'No title provided',
