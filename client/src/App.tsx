@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import Error from './pages/Error';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import {ProfileAnalyticsPage} from "./pages/ProfileAnalyticsPage";
 
 function App() {
   return (
@@ -35,6 +36,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute>
+                <ProfileAnalyticsPage />
+              </ProtectedRoute>
+            }
+          />
+
 
           {/* Public Routes */}
           <Route path="login" element={<Login />} />
