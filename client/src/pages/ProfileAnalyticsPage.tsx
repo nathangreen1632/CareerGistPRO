@@ -20,7 +20,7 @@ export const ProfileAnalyticsPage = () => {
 
       {/* 📊 Analytics Section */}
       <div className="space-y-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">
+        <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white">
           Job Analytics
         </h1>
 
