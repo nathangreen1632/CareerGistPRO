@@ -44,7 +44,12 @@ export const useJobStore = create<JobStore>((set, get) => ({
       const response = await fetch(`/api/jobs?${queryParams}`);
       const data = await response.json();
 
-      const normalizedJobs = normalizeAdzunaData(data.jobs ?? []); // 🛠 updated to Adzuna
+      const normalizedJobs = normalizeAdzunaData(data.jobs ?? []).map(job => ({
+        ...job,
+        isRemote: typeof job.isRemote === 'boolean'
+          ? job.isRemote ? 'remote' : undefined
+          : job.isRemote
+      })); // 🛠 updated to Adzuna and patched isRemote to string
 
       set({
         jobs: [...jobs, ...normalizedJobs],
