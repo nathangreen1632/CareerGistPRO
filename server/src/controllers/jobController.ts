@@ -69,13 +69,9 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
         ...(salaryMin !== undefined ? { salaryMin } : {}),
         ...(salaryMax !== undefined ? { salaryMax } : {}),
       });
-
-      console.log('✅ User analytics logged successfully');
     }
 
-    console.log('✅ Adzuna API response:', result);
     res.json(result);
-
 
   } catch (err: any) {
     console.error('❌ Unexpected Server Error fetching jobs:', err);
