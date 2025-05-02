@@ -84,6 +84,7 @@ const SearchBar: React.FC = () => {
       </select>
       <button
         onClick={handleGeolocation}
+        aria-label="Use current location"
         className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white hover:bg-emerald-300 text-black text-sm font-medium shadow-md transition"
       >
         <LocateFixed className="w-4 h-4 text-black" />
