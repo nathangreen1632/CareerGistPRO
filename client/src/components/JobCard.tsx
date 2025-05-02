@@ -174,7 +174,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
               href={applyLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-blue-500 hover:underline"
+              className="text-sm text-blue-400 hover:underline"
             >
               View Full Job
             </a>
@@ -187,11 +187,14 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           {isLoggedIn && (
             <button
               onClick={handleToggleFavorite}
-              className="text-sm text-red-500 hover:underline"
+              className={`text-sm font-medium hover:underline transition ${
+                isFavorited ? 'text-red-500' : 'text-green-400'
+              }`}
             >
               {isFavorited ? 'Unfavorite' : 'Favorite'}
             </button>
           )}
+
         </div>
 
         {postedAt && (
