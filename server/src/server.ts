@@ -12,6 +12,8 @@ import jobRoutes from './routes/jobRoutes.js';
 import db from './database/models/index.js';
 import { authenticateToken } from './middleware/authMiddleware.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import interviewRoutes from './routes/interviewRoutes.js';
+
 
 
 dotenv.config();
@@ -36,6 +38,8 @@ app.use('/api/summaries', summaryRoutes);
 // ✅ Protected API routes (authentication required)
 app.use('/api/favorites', authenticateToken, favoriteRoutes);
 app.use('/api/analytics', authenticateToken, analyticsRoutes);
+app.use('/api/interview', authenticateToken, interviewRoutes);
+
 
 
 // ✅ Universal catch-all route for React Router
