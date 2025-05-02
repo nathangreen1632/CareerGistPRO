@@ -6,7 +6,7 @@
   "scripts": {
     "install": "cd server && npm install && cd ../client && npm install",
     "build": "cd server && npm run build && cd ../client && npm run build",
-    "start": "cd server && npm run migrate && npm start",
+    "start": "cd server && npm start",
     "migrate": "npx sequelize-cli db:migrate --migrations-path server/dist/migrations --config server/dist/config/database.cjs",
     "migrate:undo": "npx sequelize-cli db:migrate:undo --migrations-path server/dist/migrations --config server/dist/config/database.cjs",
     "start:dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3001 && npm run client:dev\"",
