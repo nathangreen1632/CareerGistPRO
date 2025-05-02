@@ -8,17 +8,18 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    port: 5173,
     open: true,
     watch: {
       usePolling: true,
       interval: 100, // Faster checking
     },
-    port: 5173,
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
         secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
     },
   },

@@ -4,6 +4,7 @@ import { Response } from 'express';
 import db from '../database/models/index.js';
 import { AuthenticatedRequest } from '../middleware/authMiddleware.js';
 import { v4 as uuidv4 } from 'uuid';
+import { logUserAnalytics } from '../helpers/logUserAnalytics.js';
 
 export const addFavorite = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const userId = req.user?.id;
@@ -21,10 +22,19 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
     salaryMin,
     salaryMax,
     salaryPeriod,
-
   } = req.body;
 
-  if (!userId || !jobId || !title || !description || !applyLink || !summary || !salaryMin || !salaryMax || !salaryPeriod) {
+  if (
+    !userId ||
+    !jobId ||
+    !title ||
+    !description ||
+    !applyLink ||
+    !summary ||
+    salaryMin == null ||
+    salaryMax == null ||
+    !salaryPeriod
+  ) {
     res.status(400).json({ error: 'Missing required fields.' });
     return;
   }
@@ -64,14 +74,27 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
       salaryPeriod,
     });
 
-
-
+    // ✅ Step 3: Log analytics (non-blocking)
+    if (userId) {
+      await logUserAnalytics({
+        userId,
+        action: 'favorite',
+        jobId: job.id,
+        title: job.title,
+        company: job.company ?? 'Unknown Company',
+        location: job.location ?? 'Unknown Location',
+        salaryMin: typeof salaryMin === 'number' ? salaryMin : 0,
+        salaryMax: typeof salaryMax === 'number' ? salaryMax : 0,
+      });
+    }
+    console.log('✅ User analytics logged successfully');
     res.status(201).json({ message: 'Job added to favorites.' });
   } catch (error: any) {
     console.error('❌ Error adding favorite:', error);
     res.status(500).json({ error: 'Server error adding favorite.' });
   }
 };
+
 
 export const getFavorites = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const userId = req.user?.id;
@@ -94,23 +117,37 @@ export const getFavorites = async (req: AuthenticatedRequest, res: Response): Pr
   }
 };
 
-export const removeFavorite = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+export const removeFavorite = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
   const userId = req.user?.id;
   const { jobId } = req.params;
 
   if (!userId || !jobId) {
-    res.status(400).json({ error: 'Missing user ID or job ID.' });
+    res.status(400).json({ error: 'Missing required fields.' });
     return;
   }
 
   try {
+    // Delete the favorite
     await db.Favorite.destroy({
-      where: { userId, jobId },
+      where: { userId, jobId }
     });
 
-    res.json({ message: 'Favorite removed.' });
-  } catch (error: any) {
+    // Also delete associated analytics
+    await db.UserAnalytics.destroy({
+      where: {
+        userId,
+        jobId,
+        action: 'favorite'
+      }
+    });
+
+    res.json({ message: 'Favorite removed and analytics updated.' });
+  } catch (error) {
     console.error('❌ Error removing favorite:', error);
-    res.status(500).json({ error: 'Server error removing favorite.' });
+    res.status(500).json({ error: 'Failed to remove favorite.' });
   }
 };
+
