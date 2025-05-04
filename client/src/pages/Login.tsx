@@ -36,15 +36,18 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <form onSubmit={handleLogin} className="flex flex-col bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 space-y-4 w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-900">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 sm:p-8 space-y-5"
+      >
         <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">Login</h2>
 
         <input
           type="email"
           autoComplete="email"
           placeholder="Email"
-          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           value={email}
           required
           onChange={(e) => setEmail(e.target.value)}
@@ -53,19 +56,22 @@ const Login: React.FC = () => {
           type="password"
           autoComplete="current-password"
           placeholder="Password"
-          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
           value={password}
           required
           onChange={(e) => setPassword(e.target.value)}
         />
 
-
-        <button type="submit" className="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
+        <button
+          type="submit"
+          className="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+        >
           Login
         </button>
       </form>
     </div>
   );
+
 };
 
 export default Login;
