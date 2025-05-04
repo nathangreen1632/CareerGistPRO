@@ -13,6 +13,8 @@ import db from './database/models/index.js';
 import { authenticateToken } from './middleware/authMiddleware.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import interviewRoutes from './routes/interviewRoutes.js';
+import recommendationRoutes from './routes/recommendationRoutes.js';
+
 
 
 
@@ -39,6 +41,7 @@ app.use('/api/summaries', summaryRoutes);
 app.use('/api/favorites', authenticateToken, favoriteRoutes);
 app.use('/api/analytics', authenticateToken, analyticsRoutes);
 app.use('/api/interview', authenticateToken, interviewRoutes);
+app.use('/api/recommendations', authenticateToken, recommendationRoutes);
 
 
 
