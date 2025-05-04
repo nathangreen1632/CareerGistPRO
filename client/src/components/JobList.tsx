@@ -38,7 +38,7 @@ const JobList = () => {
   }, [jobs, summarizeJob]);
 
   return (
-    <div className="flex flex-col items-center space-y-4 py-8">
+    <div className="flex flex-col items-center space-y-4 py-8 px-4 sm:px-6">
       {jobs.map((job: UnifiedJob, index) => {
         const jobCard = (
           <JobCard
@@ -64,11 +64,11 @@ const JobList = () => {
       })}
 
       {isLoading && (
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 w-full px-4">
           {[...Array(3)].map((_, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md w-full max-w-3xl"
+              className="bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-full sm:max-w-2xl md:max-w-3xl"
             >
               <SkeletonLoader height="h-6" width="w-1/2" />
               <SkeletonLoader height="h-4" width="w-3/4" />
@@ -79,7 +79,7 @@ const JobList = () => {
       )}
 
       {!hasMore && !isLoading && (
-        <p className="text-gray-500 dark:text-gray-400">No more jobs.</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">No more jobs.</p>
       )}
     </div>
   );

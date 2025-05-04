@@ -90,10 +90,11 @@ const Favorites: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
+    <div className="px-4 sm:px-6 md:px-10 py-6 max-w-6xl mx-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Your Favorited Jobs
       </h1>
+
       <div className="space-y-6">
         {favoriteJobs.map((job) => (
           <div key={job.id} className="relative">

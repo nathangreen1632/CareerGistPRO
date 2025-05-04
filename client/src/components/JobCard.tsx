@@ -86,7 +86,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            jobId: id,
+            jobId: id, // this MUST match Job.sourceId
             title,
             company,
             location,
@@ -95,10 +95,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             summary: summary ?? '',
             logoUrl: logoUrl ?? null,
             postedAt: postedAt ?? null,
-            salaryMin: salaryMin ?? 0,
-            salaryMax: salaryMax ?? 0,
+            salaryMin: typeof salaryMin === 'number' ? salaryMin : 0,
+            salaryMax: typeof salaryMax === 'number' ? salaryMax : 0,
             salaryPeriod: salaryPeriod ?? 'unknown',
           }),
+
 
         });
 
@@ -132,43 +133,58 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }, [id, description, summary, summarizeJob]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-3xl mx-auto my-4">
-      <div className="bg-gray-800 flex flex-col space-y-2">
+    <div className="bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-full sm:max-w-2xl md:max-w-3xl mx-auto my-4">
+      <div className="flex flex-col gap-3">
         {logoUrl && (
-          <img src={logoUrl} alt={`${company} logo`} className="h-12 w-auto object-contain mb-2" />
+          <img
+            src={logoUrl}
+            alt={`${company} logo`}
+            className="h-12 w-auto object-contain mb-1 sm:mb-2"
+          />
         )}
 
-        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{title}</h2>
-        <p className="text-gray-500 dark:text-gray-400">
-          {company} — {location} {isRemote && <span className="ml-2 inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded">Remote</span>}
+        <h2 className="text-lg sm:text-xl font-bold text-gray-800 dark:text-gray-100 break-words">
+          {title}
+        </h2>
+
+        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 break-words">
+          {company} — {location}{' '}
+          {isRemote && (
+            <span className="ml-1 inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded mt-1 sm:mt-0">
+            Remote
+          </span>
+          )}
         </p>
 
-        {(salaryMin || salaryMax) && (
-          <p className="text-sm text-green-600 dark:text-green-400">
-            {salaryMin && `$${salaryMin.toLocaleString()}`} - {salaryMax && `$${salaryMax.toLocaleString()}`}
+        {(typeof salaryMin === 'number' || typeof salaryMax === 'number') && (
+          <p className="text-sm sm:text-base text-green-600 dark:text-green-400 break-words">
+            {typeof salaryMin === 'number' ? `$${salaryMin.toLocaleString()}` : ''}
+            {(typeof salaryMin === 'number' && typeof salaryMax === 'number') && ' - '}
+            {typeof salaryMax === 'number' ? `$${salaryMax.toLocaleString()}` : ''}
             {salaryPeriod && salaryPeriod !== 'unknown' && ` / ${salaryPeriod.toLowerCase()}`}
           </p>
         )}
 
-
         {summary ? (
-          <p className="text-gray-700 dark:text-gray-300 mt-2">{summary}</p>
+          <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mt-1 sm:mt-2 break-words">
+            {summary}
+          </p>
         ) : (
-          <div className="mt-2">
+          <div className="mt-1 sm:mt-2 space-y-1">
             <SkeletonLoader height="h-4" width="w-3/4" />
             <SkeletonLoader height="h-4" width="w-5/6" />
           </div>
         )}
 
         {benefits && benefits.length > 0 && (
-          <ul className="text-xs text-gray-600 dark:text-gray-400 list-disc list-inside mt-2">
+          <ul className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 list-disc list-inside mt-1 sm:mt-2 space-y-1">
             {benefits.slice(0, 3).map((benefit, idx) => (
               <li key={idx}>{benefit.replace(/_/g, ' ')}</li>
             ))}
           </ul>
         )}
 
-        <div className="flex items-center gap-4 mt-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-2 mt-4">
           {applyLink && isLoggedIn ? (
             <a
               href={applyLink}
@@ -179,15 +195,17 @@ const JobCard: React.FC<JobCardProps> = (props) => {
               View Full Job
             </a>
           ) : (
-            <span className="text-sm text-gray-400 dark:text-gray-600">
-              {isLoggedIn ? 'No job link available' : 'Login to apply'}
-            </span>
+            <span className="text-sm text-gray-400 dark:text-gray-500">
+            {isLoggedIn ? 'No job link available' : 'Login to apply'}
+          </span>
           )}
 
           {isLoggedIn && (
             <button
               onClick={handleToggleFavorite}
-              className="text-sm text-red-500 hover:underline"
+              className={`text-sm font-semibold hover:underline transition ${
+                isFavorited ? 'text-red-500' : 'text-green-400'
+              }`}
             >
               {isFavorited ? 'Unfavorite' : 'Favorite'}
             </button>

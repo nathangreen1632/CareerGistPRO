@@ -3,9 +3,9 @@ import db from '../database/models/index.js';
 import fetch from 'node-fetch';
 import { getCache, setCache } from '../cache/redisCacheService.js';
 import { logUserAnalytics } from '../helpers/logUserAnalytics.js';
+import { recommendJobs } from '../helpers/recommendJobs.js';
+import { AuthenticatedRequest } from '../middleware/authMiddleware.js';
 
-
-const { Job, User } = db;
 
 // server/src/controllers/jobController.ts
 
@@ -47,6 +47,35 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
 
     const data = await response.json() as { results?: any[]; count?: number };
 
+    console.log('🔍 Adzuna job sample:', data.results?.[0]);
+
+    // 🔁 Normalize and persist jobs to DB (if not already saved)
+    if (data.results?.length) {
+      for (const job of data.results) {
+        const existing = await db.Job.findOne({ where: { sourceId: job.id } });
+
+        if (!existing) {
+          await db.Job.create({
+            sourceId: job.id,
+            title: job.title,
+            description: job.description ?? '',
+            company: job.company?.display_name ?? '',
+            location: job.location?.display_name ?? '',
+            summary: job.description?.slice(0, 250) ?? '',
+            url: job.redirect_url ?? '',
+            logoUrl: job.company?.logo ?? '',
+            postedAt: job.created ?? null,
+            saved: false,
+            salaryMin: job.salary_min ?? null,
+            salaryMax: job.salary_max ?? null,
+            salaryPeriod: job.salary_is_predicted === '1' ? 'predicted' : 'actual',
+            benefits: job.category?.tag ? [job.category.tag] : [],
+          });
+        }
+      }
+    }
+
+
     const result = {
       jobs: data.results ?? [],
       currentPage: page,
@@ -69,13 +98,9 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
         ...(salaryMin !== undefined ? { salaryMin } : {}),
         ...(salaryMax !== undefined ? { salaryMax } : {}),
       });
-
-      console.log('✅ User analytics logged successfully');
     }
 
-    console.log('✅ Adzuna API response:', result);
     res.json(result);
-
 
   } catch (err: any) {
     console.error('❌ Unexpected Server Error fetching jobs:', err);
@@ -83,86 +108,30 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
   }
 };
 
+export const getRecommendedJobs = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  const userId = req.user?.id;
 
-// GET /jobs
-export const getAllJobs = async (_req: Request, res: Response): Promise<void> => {
+  if (!userId) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return;
+  }
+
   try {
-    const jobs = await Job.findAll({
-      include: [{ model: User, as: 'user', attributes: ['username'] }],
+    // Pull 50 most recent non-saved jobs
+    const newJobs = await db.Job.findAll({
+      where: { saved: false },
+      order: [['createdAt', 'DESC']],
+      limit: 50,
     });
-    res.json(jobs);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
-// GET /jobs/:id
-export const getJobById = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  try {
-    const job = await Job.findByPk(id, {
-      include: [{ model: User, as: 'user', attributes: ['username'] }],
-    });
-    if (job) {
-      res.json(job);
-    } else {
-      res.status(404).json({ message: 'Job not found' });
-    }
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const recommendations = await recommendJobs(userId, newJobs);
 
-// GET /jobs/saved - Get saved jobs for the user
-export const retrieveSavedJobs = async (_req: Request, res: Response): Promise<void> => {
-  try {
-    const savedJobs = await Job.findAll({
-      where: { saved: true },
-      include: [{ model: User, as: 'user', attributes: ['username'] }],
-    });
-    res.json(savedJobs);
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// POST /jobs - save a job to database
-export const createJob = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const newJob = await Job.create({ ...req.body, saved: true });
-    res.status(201).json(newJob);
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// PUT /jobs/:id - Update a job by id
-export const updateJob = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const job = await Job.findByPk(req.params.id);
-    if (job) {
-      await job.update(req.body);
-      res.json(job);
-    } else {
-      res.status(404).json({ message: 'Job not found' });
-    }
-  } catch (error: any) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-// DELETE /jobs/:id
-export const deleteJob = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.params;
-  try {
-    const job = await Job.findByPk(id);
-    if (job) {
-      await job.destroy();
-      res.json({ message: 'Job deleted' });
-    } else {
-      res.status(404).json({ message: 'Job not found' });
-    }
-  } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.json(recommendations);
+  } catch (err) {
+    console.error('❌ Failed to fetch recommended jobs:', err);
+    res.status(500).json({ error: 'Failed to fetch recommendations' });
   }
 };

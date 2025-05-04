@@ -3,7 +3,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import SearchBar from "./SearchBar";
+
 
 const Layout: React.FC = () => {
   const { token, logout } = useAuth();
@@ -49,7 +49,6 @@ const Layout: React.FC = () => {
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-6 py-8">
-        <SearchBar />
         <Outlet />
       </main>
 

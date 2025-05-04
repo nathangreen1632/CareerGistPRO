@@ -9,14 +9,32 @@ interface JobAttributes {
   description: string;
   summary?: string;
   url?: string;
-  logoUrl?: string;     // ✅ Moved here for consistency
-  postedAt?: string;    // ✅ Moved here for consistency
+  logoUrl?: string;
+  postedAt?: string;
   saved: boolean;
+
+  // ✅ New fields required for recommendation rendering
+  salaryMin?: number;
+  salaryMax?: number;
+  salaryPeriod?: string;
+  benefits?: string[];
 }
 
 type JobCreationAttributes = Optional<
   JobAttributes,
-  'id' | 'sourceId' | 'company' | 'location' | 'summary' | 'url' | 'logoUrl' | 'postedAt' | 'saved'
+  | 'id'
+  | 'sourceId'
+  | 'company'
+  | 'location'
+  | 'summary'
+  | 'url'
+  | 'logoUrl'
+  | 'postedAt'
+  | 'salaryMin'
+  | 'salaryMax'
+  | 'salaryPeriod'
+  | 'benefits'
+  | 'saved'
 >;
 
 export class Job extends Model<JobAttributes, JobCreationAttributes> implements JobAttributes {
@@ -31,6 +49,11 @@ export class Job extends Model<JobAttributes, JobCreationAttributes> implements 
   public logoUrl?: string;
   public postedAt?: string;
   public saved!: boolean;
+
+  public salaryMin?: number;
+  public salaryMax?: number;
+  public salaryPeriod?: string;
+  public benefits?: string[];
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -83,6 +106,24 @@ export function initJobModel(sequelize: Sequelize): void {
       saved: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+
+      // ✅ New fields
+      salaryMin: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+      },
+      salaryMax: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+      },
+      salaryPeriod: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      benefits: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true,
       },
     },
     {
