@@ -161,7 +161,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             {typeof salaryMin === 'number' ? `$${salaryMin.toLocaleString()}` : ''}
             {(typeof salaryMin === 'number' && typeof salaryMax === 'number') && ' - '}
             {typeof salaryMax === 'number' ? `$${salaryMax.toLocaleString()}` : ''}
-            {salaryPeriod && salaryPeriod !== 'unknown' && ` / ${salaryPeriod.toLowerCase()}`}
           </p>
         )}
 
