@@ -29,7 +29,7 @@ const Home: React.FC = () => {
   }, [fetchJobs, isLoading, hasMore]);
 
   return (
-    <div className="space-y-6">
+    <div className="px-4 sm:px-6 md:px-10 space-y-6">
       <SearchBar />
 
       {isLoading && jobs.length === 0 && (
