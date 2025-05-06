@@ -19,14 +19,7 @@ export const getRecommendedJobs = async (req: Request, res: Response): Promise<v
       order: [['createdAt', 'DESC']],
     });
 
-    console.log(`📦 Jobs pulled for recommendation: ${recentJobs.length}`);
-    if (recentJobs.length > 0) {
-      console.log(`🔍 Sample job title: ${recentJobs[0].title}`);
-    }
-
     const recommendations = (await recommendJobs(userId, recentJobs)).slice(0, 10);
-
-    console.log(`✅ Recommendations generated: ${recommendations.length}`);
 
     res.json(recommendations);
   } catch (error) {
