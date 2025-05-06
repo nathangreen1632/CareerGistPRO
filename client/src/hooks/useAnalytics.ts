@@ -15,7 +15,7 @@ const fetcher = async (url: string) => {
       },
     });
 
-    const contentType = response.headers.get('content-type') || '';
+    const contentType = response.headers.get('content-type') ?? '';
     if (!response.ok || !contentType.includes('application/json')) {
       const text = await response.text();
       console.error('❌ Analytics fetch error: Not JSON\n', text);
@@ -42,9 +42,9 @@ export const useAnalytics = () => {
   );
 
   return {
-    salaryHistory: data?.salaryHistory || [],
-    companyFavorites: data?.companyFavorites || [],
-    locationSpread: data?.locationSpread || [],
+    salaryHistory: data?.salaryHistory ?? [],
+    companyFavorites: data?.companyFavorites ?? [],
+    locationSpread: data?.locationSpread ?? [],
     isLoading,
     isError: !!error || data === null,
   };
