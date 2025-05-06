@@ -1,4 +1,5 @@
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import SalaryTooltip from './SalaryTooltip';
 
 interface SalaryData {
   title: string;
@@ -6,6 +7,7 @@ interface SalaryData {
   avgSalary: number;
   company: string;
   applyLink: string;
+  location?: string; // Optional in case some entries lack this
 }
 
 interface Props {
@@ -23,21 +25,7 @@ export const SalaryLineChart = ({ data }: Props) => (
           strokeWidth={2}
           dot={{ r: 3 }}
         />
-        <Tooltip
-          content={({ payload }) => {
-            const data = payload?.[0]?.payload;
-            if (!data) return null;
-
-            return (
-              <div className="bg-white dark:bg-gray-300 p-3 rounded shadow text-sm space-y-1">
-                <p className="font-semibold">{data.title}</p>
-                <p className="text-green-600">${data.avgSalary.toFixed(2)}</p>
-                <p className="text-black">{data.company}</p>
-                <p className="text-black">{data.location}</p>
-              </div>
-            );
-          }}
-        />
+        <Tooltip content={<SalaryTooltip />} />
         <XAxis dataKey="date" />
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
