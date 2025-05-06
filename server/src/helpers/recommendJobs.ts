@@ -6,7 +6,7 @@ import { getKeywordsFromText } from '../utils/textAnalysis.js';
 import { levenshteinDistance } from '../utils/levenshtein.js';
 
 interface ScoredJob {
-  job: any;  // Will map to UnifiedJob shape later
+  job: any;
   score: number;
 }
 
@@ -20,16 +20,11 @@ const mapToUnifiedJob = (job: Job): Record<string, any> => ({
   applyLink: job.url,
   postedAt: job.postedAt,
   logoUrl: job.logoUrl ?? undefined,
-
-  // 🧠 Ensure values pass through unmodified if they exist in DB
-  salaryMin: job.salaryMin !== undefined ? job.salaryMin : null,
-  salaryMax: job.salaryMax !== undefined ? job.salaryMax : null,
+  salaryMin: job.salaryMin ?? null,
+  salaryMax: job.salaryMax ?? null,
   salaryPeriod: job.salaryPeriod ?? null,
   benefits: job.benefits ?? [],
 });
-
-
-
 
 export const recommendJobs = async (userId: string, newJobs: Job[]): Promise<ScoredJob[]> => {
   try {
@@ -71,23 +66,10 @@ export const recommendJobs = async (userId: string, newJobs: Job[]): Promise<Sco
       return { job: mapToUnifiedJob(job), score: Math.round(score) };
     });
 
-    console.log('🔎 Debug top recommended job:', {
-      id: newJobs[0].id,
-      title: newJobs[0].title,
-      company: newJobs[0].company,
-      location: newJobs[0].location,
-      description: newJobs[0].description?.slice(0, 100),
-      summary: newJobs[0].summary,
-      url: newJobs[0].url,
-    });
-
-    console.log('🧪 Mapped job:', mapToUnifiedJob(newJobs[0]));
-
-
     return scored
       .slice()
       .sort((a, b) => b.score - a.score)
-      .slice(0, 10); // 🔟 limit
+      .slice(0, 10);
   } catch (err) {
     console.error('❌ Error in recommendJobs:', err);
     return newJobs.slice(0, 10).map(job => ({
