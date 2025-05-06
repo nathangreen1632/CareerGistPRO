@@ -8,7 +8,7 @@ const SearchBar: React.FC = () => {
 
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
-  const [radius, setRadius] = useState(25); // Default 25 miles
+  const [radius, setRadius] = useState(25);
 
   const handleSearch = () => {
     updateSearchFilters({ title, location, radius });
