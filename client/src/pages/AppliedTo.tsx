@@ -1,5 +1,3 @@
-// client/src/pages/AppliedTo.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from '../components/JobCard';
@@ -74,8 +72,8 @@ const AppliedTo: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
+    <div className="px-4 sm:px-6 md:px-8 py-6 max-w-5xl mx-auto">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Jobs You Applied To
       </h1>
       <div className="space-y-6">

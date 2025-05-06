@@ -1,5 +1,7 @@
-import {NextFunction, Request, Response} from 'express';
-import jwt from 'jsonwebtoken';
+// server/src/middleware/authMiddleware.ts
+
+import { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -25,14 +27,22 @@ export const authenticateToken = (
   }
 
   try {
-    req.user = jwt.verify(token, JWT_SECRET) as {
-      id: string;
-      email: string;
-      role: string;
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role,
     };
+
     next();
-  } catch (err) {
-    console.error('JWT verification failed:', err);
-    res.status(403).json({ error: 'Invalid or expired token.' });
+  } catch (err: any) {
+    if (err.name === 'TokenExpiredError') {
+      console.warn('⚠️ Token expired');
+      res.status(401).json({ error: 'Token expired' });
+    } else {
+      console.error('❌ JWT verification failed:', err);
+      res.status(403).json({ error: 'Invalid token' });
+    }
   }
 };

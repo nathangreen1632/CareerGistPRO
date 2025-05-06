@@ -11,14 +11,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
-  const [hydrated, setHydrated] = useState(false); // ✅ New flag to wait until we check localStorage
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
     }
-    setHydrated(true); // ✅ After checking localStorage
+    setHydrated(true);
   }, []);
 
   const login = (newToken: string) => {
@@ -29,11 +29,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
+    window.location.href = '/';
   };
 
   const value = useMemo<AuthContextType>(() => ({
     token,
-    isLoggedIn: !!token && hydrated, // ✅ Only say "logged in" after hydration
+    isLoggedIn: !!token && hydrated,
     login,
     logout,
   }), [token, hydrated]);

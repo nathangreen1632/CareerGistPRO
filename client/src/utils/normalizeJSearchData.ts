@@ -1,6 +1,6 @@
 import { JobDetails } from '../types/jobTypes';
 
-export const normalizeJobData = (rawJobs: JobDetails[]) => {
+export const normalizeJSearchData = (rawJobs: JobDetails[]) => {
   return rawJobs.map((job) => ({
     id: job.job_id,
     title: job.job_title,

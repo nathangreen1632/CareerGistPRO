@@ -36,7 +36,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
   }
 };
 
-  export const loginUser = async (req: Request, res: Response): Promise<void> => {
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   try {
     const user = await db.User.findOne({ where: { email } });
@@ -78,5 +78,41 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error fetching user.' });
+  }
+};
+
+export const refreshToken = async (req: Request, res: Response): Promise<void> => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
+
+  if (!token) {
+    res.status(401).json({ error: 'No token provided.' });
+    return;
+  }
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET, { ignoreExpiration: true }) as {
+      id: string;
+      email: string;
+      role: string;
+      exp: number;
+    };
+
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp < now - 120) {
+      res.status(403).json({ error: 'Token expired too long ago. Please log in again.' });
+      return;
+    }
+
+    const newToken = jwt.sign(
+      { id: payload.id, email: payload.email, role: payload.role },
+      JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    res.json({ token: newToken });
+  } catch (err) {
+    console.error('❌ Token refresh failed:', err);
+    res.status(403).json({ error: 'Invalid token.' });
   }
 };
