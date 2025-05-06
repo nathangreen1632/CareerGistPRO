@@ -20,7 +20,7 @@ interface JobCardProps {
   logoUrl?: string;
   isFavorited?: boolean;
   onUnfavorite?: () => void;
-
+  matchScore?: number;
 }
 
 const JobCard: React.FC<JobCardProps> = (props) => {
@@ -39,6 +39,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     isRemote,
     postedAt,
     logoUrl,
+    matchScore,
     isFavorited: initialFavorite = false,
   } = props;
 
@@ -133,7 +134,13 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }, [id, description, summary, summarizeJob]);
 
   return (
-    <div className="bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-full sm:max-w-2xl md:max-w-3xl mx-auto my-4">
+    <div className="relative bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-screen-sm sm:max-w-2xl md:max-w-3xl mx-auto my-4">
+      {typeof matchScore === 'number' && (
+        <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
+          Match Score: {matchScore}%
+        </div>
+      )}
+
       <div className="flex flex-col gap-3">
         {logoUrl && (
           <img
