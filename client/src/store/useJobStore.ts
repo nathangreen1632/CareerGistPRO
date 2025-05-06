@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { normalizeAdzunaData } from '../utils/normalizeAdzunaData'; // 🛠 switched to Adzuna normalizer
-import { UnifiedJob } from '../types/jobTypes'; // ✅ Clean import
+import { normalizeAdzunaData } from '../utils/normalizeAdzunaData';
+import { UnifiedJob } from '../types/jobTypes';
 
 interface SearchFilters {
   title?: string;
@@ -19,7 +19,15 @@ interface JobStore {
   summarizeJob: (jobId: string, description: string) => Promise<void>;
   updateSearchFilters: (filters: SearchFilters) => void;
   resetSearchFilters: () => void;
+  summarizedJobIds: Set<string>;
 }
+
+const resolveIsRemote = (value: unknown): string | undefined => {
+  if (typeof value === 'boolean') {
+    return value ? 'remote' : undefined;
+  }
+  return value as string | undefined;
+};
 
 export const useJobStore = create<JobStore>((set, get) => ({
   jobs: [],
@@ -28,6 +36,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
   isLoading: false,
   error: null,
   searchFilters: {},
+  summarizedJobIds: new Set(),
 
   fetchJobs: async () => {
     const { currentPage, jobs, searchFilters } = get();
@@ -46,10 +55,8 @@ export const useJobStore = create<JobStore>((set, get) => ({
 
       const normalizedJobs = normalizeAdzunaData(data.jobs ?? []).map(job => ({
         ...job,
-        isRemote: typeof job.isRemote === 'boolean'
-          ? job.isRemote ? 'remote' : undefined
-          : job.isRemote
-      })); // 🛠 updated to Adzuna and patched isRemote to string
+        isRemote: resolveIsRemote(job.isRemote),
+      }));
 
       set({
         jobs: [...jobs, ...normalizedJobs],
@@ -64,6 +71,11 @@ export const useJobStore = create<JobStore>((set, get) => ({
   },
 
   summarizeJob: async (jobId: string, description: string) => {
+    const { summarizedJobIds } = get();
+
+    if (summarizedJobIds.has(jobId)) return;
+    summarizedJobIds.add(jobId);
+
     try {
       const response = await fetch('/api/summaries/summarize', {
         method: 'POST',
@@ -96,6 +108,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
       jobs: [],
       currentPage: 1,
       hasMore: true,
+      summarizedJobIds: new Set(),
     }));
   },
 
@@ -106,6 +119,7 @@ export const useJobStore = create<JobStore>((set, get) => ({
       jobs: [],
       currentPage: 1,
       hasMore: true,
+      summarizedJobIds: new Set(),
     }));
   },
 }));
