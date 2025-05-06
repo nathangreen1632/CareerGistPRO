@@ -1,5 +1,3 @@
-// src/App.tsx
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
@@ -10,10 +8,13 @@ import Error from './pages/Error';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import {ProfileAnalyticsPage} from "./pages/ProfileAnalyticsPage";
+import SessionModalWrapper from './components/SessionModalWrapper';
+
 
 function App() {
   return (
     <Router>
+      <SessionModalWrapper />
       <Routes>
         {/* Layout wraps ALL normal pages */}
         <Route path="/" element={<Layout />}>

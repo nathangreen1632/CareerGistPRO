@@ -40,11 +40,8 @@ const RecommendedJobs: React.FC = () => {
             isRemote={job.isRemote}
             postedAt={job.postedAt ?? undefined}
             logoUrl={job.logoUrl}
+            matchScore={score}
           />
-
-          <div className="absolute top-2 right-2 bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-            Match Score: {score}%
-          </div>
         </div>
       ))}
     </div>

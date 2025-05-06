@@ -14,80 +14,73 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
   const title = (req.query.title as string) || 'Full Stack Engineer';
   const location = (req.query.location as string) || 'United States';
   const radius = parseInt(req.query.radius as string) || 25;
-
   const cacheKey = `adzuna:jobs:${title}:${location}:${radius}:${page}`;
+  const userId = (req as any).user?.id;
+
+  const country = process.env.ADZUNA_COUNTRY ?? 'us';
+  const appId = process.env.ADZUNA_APP_ID!;
+  const appKey = process.env.ADZUNA_APP_KEY!;
+
+  const encodedTitle = encodeURIComponent(title);
+  const encodedLocation = encodeURIComponent(location);
+  const adzunaUrl = `https://api.adzuna.com/v1/api/jobs/${country}/search/${page}?app_id=${appId}&app_key=${appKey}&what=${encodedTitle}&where=${encodedLocation}&distance=${radius}`;
+
+  const buildResponse = (data: any) => ({
+    jobs: data.results ?? [],
+    currentPage: page,
+    totalPages: Math.ceil((data.count ?? 0) / 10),
+  });
+
+  const persistJobs = async (jobs: any[]) => {
+    for (const job of jobs) {
+      const exists = await db.Job.findOne({ where: { sourceId: job.id } });
+      if (!exists) {
+        await db.Job.create({
+          sourceId: job.id,
+          title: job.title,
+          description: job.description ?? '',
+          company: job.company?.display_name ?? '',
+          location: job.location?.display_name ?? '',
+          summary: job.description?.slice(0, 250) ?? '',
+          url: job.redirect_url ?? '',
+          logoUrl: job.company?.logo ?? '',
+          postedAt: job.created ?? null,
+          saved: false,
+          salaryMin: job.salary_min ?? null,
+          salaryMax: job.salary_max ?? null,
+          salaryPeriod: job.salary_is_predicted === '1' ? 'predicted' : 'actual',
+          benefits: job.category?.tag ? [job.category.tag] : [],
+        });
+      }
+    }
+  };
 
   try {
-    // 1. Check Redis cache first
     const cached = await getCache(cacheKey);
     if (cached) {
-      res.json(cached); // ✅ No JSON.parse anymore
+      res.json(cached);
       return;
     }
 
-
-    // 2. Fetch from Adzuna API
-    const country = process.env.ADZUNA_COUNTRY ?? 'us';
-    const appId = process.env.ADZUNA_APP_ID!;
-    const appKey = process.env.ADZUNA_APP_KEY!;
-
-    const encodedTitle = encodeURIComponent(title);
-    const encodedLocation = encodeURIComponent(location);
-
-    const response = await fetch(`https://api.adzuna.com/v1/api/jobs/${country}/search/${page}?app_id=${appId}&app_key=${appKey}&what=${encodedTitle}&where=${encodedLocation}&distance=${radius}`, {
-      method: 'GET',
-    });
-
+    const response = await fetch(adzunaUrl);
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`❌ Adzuna API Error [${response.status}]:`, errorText);
-      res.status(response.status).json({ error: `Failed to fetch jobs from Adzuna API. Status: ${response.status}` });
+      res.status(response.status).json({ error: `Failed to fetch jobs from Adzuna API.` });
       return;
     }
 
     const data = await response.json() as { results?: any[]; count?: number };
 
-    console.log('🔍 Adzuna job sample:', data.results?.[0]);
-
-    // 🔁 Normalize and persist jobs to DB (if not already saved)
     if (data.results?.length) {
-      for (const job of data.results) {
-        const existing = await db.Job.findOne({ where: { sourceId: job.id } });
-
-        if (!existing) {
-          await db.Job.create({
-            sourceId: job.id,
-            title: job.title,
-            description: job.description ?? '',
-            company: job.company?.display_name ?? '',
-            location: job.location?.display_name ?? '',
-            summary: job.description?.slice(0, 250) ?? '',
-            url: job.redirect_url ?? '',
-            logoUrl: job.company?.logo ?? '',
-            postedAt: job.created ?? null,
-            saved: false,
-            salaryMin: job.salary_min ?? null,
-            salaryMax: job.salary_max ?? null,
-            salaryPeriod: job.salary_is_predicted === '1' ? 'predicted' : 'actual',
-            benefits: job.category?.tag ? [job.category.tag] : [],
-          });
-        }
-      }
+      await persistJobs(data.results);
     }
 
-
-    const result = {
-      jobs: data.results ?? [],
-      currentPage: page,
-      totalPages: Math.ceil((data.count ?? 0) / 10), // Adzuna returns 10 jobs per page by default
-    };
-
-    await setCache(cacheKey, result, 60 * 20); // Cache for 20 minutes
+    const result = buildResponse(data);
+    await setCache(cacheKey, result, 60 * 20);
 
     const salaryMin = req.query.salaryMin ? Number(req.query.salaryMin) : undefined;
     const salaryMax = req.query.salaryMax ? Number(req.query.salaryMax) : undefined;
-
-    const userId = (req as any).user?.id;
 
     if (userId) {
       await logUserAnalytics({
@@ -101,12 +94,12 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
     }
 
     res.json(result);
-
   } catch (err: any) {
     console.error('❌ Unexpected Server Error fetching jobs:', err);
     res.status(500).json({ error: 'Unexpected server error fetching jobs.' });
   }
 };
+
 
 export const getRecommendedJobs = async (
   req: AuthenticatedRequest,

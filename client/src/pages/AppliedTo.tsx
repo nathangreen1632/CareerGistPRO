@@ -1,5 +1,3 @@
-// client/src/pages/AppliedTo.tsx
-
 import React, { useEffect, useState } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from '../components/JobCard';
