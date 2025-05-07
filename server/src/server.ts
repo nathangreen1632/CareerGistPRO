@@ -76,7 +76,6 @@ app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => 
           <meta name="twitter:title" content="${title}" />
           <meta name="twitter:description" content="${description}" />
           <meta name="twitter:image" content="${ogImage}" />
-          <meta http-equiv="refresh" content="0; url='${jobUrl}'" />
           <title>${title}</title>
         </head>
         <body>
