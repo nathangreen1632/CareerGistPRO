@@ -52,15 +52,16 @@ app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    // 🌐 Dynamically resolve domain and protocol
     const host = req.get('host');
     const protocol = req.protocol;
     const baseUrl = `${protocol}://${host}`;
-
     const jobUrl = `${baseUrl}/job/${sourceId}`;
     const ogImage = `${baseUrl}/og-default.jpg`;
     const description = job.summary ?? job.description?.slice(0, 200) ?? 'AI-enhanced job opportunity.';
     const title = `${job.title} at ${job.company}`;
+
+    const userAgent = req.get('User-Agent') ?? '';
+    const isBot = /facebookexternalhit|linkedinbot|twitterbot|slackbot|discordbot|embedly|quora|whatsapp/i.test(userAgent);
 
     const html = `
       <!DOCTYPE html>
@@ -77,9 +78,10 @@ app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => 
           <meta name="twitter:description" content="${description}" />
           <meta name="twitter:image" content="${ogImage}" />
           <title>${title}</title>
+          ${isBot ? '' : `<meta http-equiv="refresh" content="0; url='${jobUrl}'" />`}
         </head>
         <body>
-          Redirecting to <a href="${jobUrl}">${title}</a>
+          ${isBot ? '' : `Redirecting to <a href="${jobUrl}">${title}</a>`}
         </body>
       </html>
     `;
@@ -90,6 +92,7 @@ app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => 
     res.status(500).send('Internal server error');
   }
 });
+
 
 // ✅ React fallback for SPA
 app.get('*', (_req, res) => {
