@@ -1,22 +1,19 @@
 // server/src/server.ts
 
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import db from './database/models/index.js';
 
 import authRoutes from './routes/authRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import summaryRoutes from './routes/summaryRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
-import db from './database/models/index.js';
-import { authenticateToken } from './middleware/authMiddleware.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
 import interviewRoutes from './routes/interviewRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
-
-
-
+import { authenticateToken } from './middleware/authMiddleware.js';
 
 dotenv.config();
 
@@ -32,20 +29,65 @@ app.use(express.json());
 // ✅ Serve static frontend assets
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
-// ✅ Public API routes (no authentication required)
+// ✅ Public API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/summaries', summaryRoutes);
 
-// ✅ Protected API routes (authentication required)
+// ✅ Protected API routes
 app.use('/api/favorites', authenticateToken, favoriteRoutes);
 app.use('/api/analytics', authenticateToken, analyticsRoutes);
 app.use('/api/interview', authenticateToken, interviewRoutes);
 app.use('/api/recommendations', authenticateToken, recommendationRoutes);
 
+// ✅ SSR route for Open Graph social previews
+app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => {
+  const { sourceId } = req.params;
 
+  try {
+    const job = await db.Job.findOne({ where: { sourceId } });
 
-// ✅ Universal catch-all route for React Router
+    if (!job) {
+      res.status(404).send('Job not found');
+      return;
+    }
+
+    const ogImage = 'https://www.careergistpro.com/og-default.jpg';
+    const description = job.summary ?? job.description?.slice(0, 200) ?? 'AI-enhanced job opportunity.';
+    const title = `${job.title} at ${job.company}`;
+    const jobUrl = `https://www.careergistpro.com/job/${sourceId}`;
+
+    const html = `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="${jobUrl}" />
+          <meta property="og:title" content="${title}" />
+          <meta property="og:description" content="${description}" />
+          <meta property="og:image" content="${ogImage}" />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content="${title}" />
+          <meta name="twitter:description" content="${description}" />
+          <meta name="twitter:image" content="${ogImage}" />
+          <meta http-equiv="refresh" content="0; url='${jobUrl}'" />
+          <title>${title}</title>
+        </head>
+        <body>
+          Redirecting to <a href="${jobUrl}">${title}</a>
+        </body>
+      </html>
+    `;
+
+    res.status(200).send(html);
+  } catch (err: any) {
+    console.error('❌ SSR job preview error:', err);
+    res.status(500).send('Internal server error');
+  }
+});
+
+// ✅ React fallback for SPA
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });
@@ -53,7 +95,6 @@ app.get('*', (_req, res) => {
 const startServer = async (): Promise<void> => {
   try {
     await db.sequelize.authenticate();
-
     await db.sequelize.sync({ alter: true });
 
     app.listen(PORT, () => {
