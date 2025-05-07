@@ -8,8 +8,9 @@ interface Props {
 }
 
 export const ShareButtons: React.FC<Props> = ({ sourceId }) => {
-  const url = `https://www.careergistpro.com/job/${sourceId}`;
-  const encodedUrl = encodeURIComponent(url);
+  // ✅ Use the SSR share endpoint for OG scraping
+  const shareUrl = `https://www.careergistpro.com/share/${sourceId}`;
+  const encodedUrl = encodeURIComponent(shareUrl);
 
   const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
   const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
