@@ -52,10 +52,15 @@ app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const ogImage = 'https://www.careergistpro.com/og-default.jpg';
+    // 🌐 Dynamically resolve domain and protocol
+    const host = req.get('host');
+    const protocol = req.protocol;
+    const baseUrl = `${protocol}://${host}`;
+
+    const jobUrl = `${baseUrl}/job/${sourceId}`;
+    const ogImage = `${baseUrl}/og-default.jpg`;
     const description = job.summary ?? job.description?.slice(0, 200) ?? 'AI-enhanced job opportunity.';
     const title = `${job.title} at ${job.company}`;
-    const jobUrl = `https://www.careergistpro.com/job/${sourceId}`;
 
     const html = `
       <!DOCTYPE html>
