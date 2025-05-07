@@ -41,7 +41,8 @@ app.use('/api/interview', authenticateToken, interviewRoutes);
 app.use('/api/recommendations', authenticateToken, recommendationRoutes);
 
 // ✅ SSR route for Open Graph social previews
-app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => {
+// server/src/server.ts
+app.get('/share/:sourceId', async (req: Request, res: Response): Promise<void> => {
   const { sourceId } = req.params;
 
   try {
@@ -63,36 +64,38 @@ app.get('/job/:sourceId', async (req: Request, res: Response): Promise<void> => 
     const userAgent = req.get('User-Agent') ?? '';
     const isBot = /facebookexternalhit|linkedinbot|twitterbot|slackbot|discordbot|embedly|quora|whatsapp/i.test(userAgent);
 
-    const html = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content="${jobUrl}" />
-          <meta property="og:title" content="${title}" />
-          <meta property="og:description" content="${description}" />
-          <meta property="og:image" content="${ogImage}" />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content="${title}" />
-          <meta name="twitter:description" content="${description}" />
-          <meta name="twitter:image" content="${ogImage}" />
-          <title>${title}</title>
-          ${isBot ? '' : `<meta http-equiv="refresh" content="0; url='${jobUrl}'" />`}
-        </head>
-        <body>
-          ${isBot ? '' : `Redirecting to <a href="${jobUrl}">${title}</a>`}
-        </body>
-      </html>
-    `;
-
-    res.status(200).send(html);
+    if (isBot) {
+      const html = `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta property="og:type" content="website" />
+            <meta property="og:url" content="${jobUrl}" />
+            <meta property="og:title" content="${title}" />
+            <meta property="og:description" content="${description}" />
+            <meta property="og:image" content="${ogImage}" />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content="${title}" />
+            <meta name="twitter:description" content="${description}" />
+            <meta name="twitter:image" content="${ogImage}" />
+            <title>${title}</title>
+          </head>
+          <body>
+            Preview only.
+          </body>
+        </html>
+      `;
+      res.status(200).send(html);
+    } else {
+      // ✅ Real 302 redirect for humans
+      res.redirect(302, jobUrl);
+    }
   } catch (err: any) {
     console.error('❌ SSR job preview error:', err);
     res.status(500).send('Internal server error');
   }
 });
-
 
 // ✅ React fallback for SPA
 app.get('*', (_req, res) => {
