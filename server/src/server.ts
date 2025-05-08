@@ -26,7 +26,14 @@ const PORT = process.env.PORT ?? 3001;
 
 app.use(express.json());
 
+app.get('/og-default.jpg', (_req, res) => {
+  res.setHeader('Content-Type', 'image/jpeg');
+  res.sendFile(path.join(__dirname, '../../client/public/og-default.jpg'));
+});
+
+
 // ✅ Serve static frontend assets
+app.use(express.static(path.join(__dirname, '../../client/public')));
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
 // ✅ Public API routes
@@ -57,7 +64,7 @@ app.get('/share/:sourceId', async (req: Request, res: Response): Promise<void> =
     const protocol = req.protocol;
     const baseUrl = `${protocol}://${host}`;
     const jobUrl = `${baseUrl}/job/${sourceId}`;
-    const ogImage = `${baseUrl}/og-default.jpg`;
+    const ogImage = `${baseUrl}/og-default.jpg?v=2`;
     const description = job.summary ?? job.description?.slice(0, 200) ?? 'AI-enhanced job opportunity.';
     const title = `${job.title} at ${job.company}`;
 
