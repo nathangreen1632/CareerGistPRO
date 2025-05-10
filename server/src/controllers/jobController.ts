@@ -5,6 +5,7 @@ import { getCache, setCache } from '../cache/redisCacheService.js';
 import { logUserAnalytics } from '../helpers/logUserAnalytics.js';
 import { recommendJobs } from '../helpers/recommendJobs.js';
 import { AuthenticatedRequest } from '../middleware/authMiddleware.js';
+import { seedAllAdzunaJobs } from '../services/adzunaSeeder.js';
 
 export const getPaginatedJobs = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
@@ -140,4 +141,9 @@ export const getJobBySourceId = async (req: Request, res: Response): Promise<voi
     console.error('❌ Failed to fetch job by sourceId:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
+};
+
+export const seedAllJobsController = async (_req: Request, res: Response): Promise<void> => {
+  await seedAllAdzunaJobs(_req, res);
+  res.status(200).json({ message: '✅ Seeding complete' });
 };
