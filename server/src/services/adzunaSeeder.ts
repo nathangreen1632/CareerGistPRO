@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import db from "../database/models";
+import db from "../database/models/index.js";
 import fetch from "node-fetch";
 
 export const seedAllAdzunaJobs = async (_req: Request, res: Response): Promise<void> => {
