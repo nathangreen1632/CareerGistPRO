@@ -112,7 +112,7 @@ app.get('*', (_req, res) => {
 const startServer = async (): Promise<void> => {
   try {
     await db.sequelize.authenticate();
-    await db.sequelize.sync({ alter: true });
+    await db.sequelize.sync({ alter: false });
 
     app.listen(PORT, () => {
       console.log(`-→ Server running at http://localhost:${PORT}`);
