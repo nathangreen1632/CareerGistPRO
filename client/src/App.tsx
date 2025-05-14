@@ -7,15 +7,18 @@ import Register from './pages/Register';
 import Error from './pages/Error';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
-import {ProfileAnalyticsPage} from "./pages/ProfileAnalyticsPage";
+import { ProfileAnalyticsPage } from './pages/ProfileAnalyticsPage';
 import SessionModalWrapper from './components/SessionModalWrapper';
-
+import JobDetailPage from './pages/JobDetailPage';
 
 function App() {
   return (
     <Router>
       <SessionModalWrapper />
       <Routes>
+        {/* ✅ Standalone job preview page */}
+        <Route path="/job/:sourceId" element={<JobDetailPage />} />
+
         {/* Layout wraps ALL normal pages */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -45,7 +48,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
 
           {/* Public Routes */}
           <Route path="login" element={<Login />} />
