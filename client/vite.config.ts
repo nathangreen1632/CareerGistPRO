@@ -21,6 +21,11 @@ export default defineConfig({
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
+      '/analytics': {
+        target: 'http://localhost:8000', // FastAPI backend (PyDataPRO)
+        changeOrigin: true,
+        secure: false,
+      }
     },
   },
 });

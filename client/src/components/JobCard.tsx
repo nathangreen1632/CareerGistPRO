@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import SkeletonLoader from "./SkeletonLoader";
 import toast from "react-hot-toast";
+import {ShareButtons} from "./ShareButtons";
 
 interface JobCardProps {
   id: string;
+  sourceId?: string;
   title: string;
   company?: string;
   location?: string;
@@ -16,7 +18,7 @@ interface JobCardProps {
   salaryPeriod?: string;
   benefits?: string[];
   isRemote?: string | boolean | null;
-  postedAt?: string;
+  postedAt?: string | null;
   logoUrl?: string;
   isFavorited?: boolean;
   onUnfavorite?: () => void;
@@ -26,6 +28,7 @@ interface JobCardProps {
 const JobCard: React.FC<JobCardProps> = (props) => {
   const {
     id,
+    sourceId,
     title,
     company,
     location,
@@ -220,6 +223,10 @@ const JobCard: React.FC<JobCardProps> = (props) => {
 
         {postedAt && (
           <p className="text-xs text-gray-400 mt-2">Posted {postedAt}</p>
+        )}
+
+        {(sourceId || id ) && (
+          <ShareButtons sourceId={sourceId ?? id} title={title} company={company} />
         )}
       </div>
     </div>

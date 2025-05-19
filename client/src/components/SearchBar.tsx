@@ -12,6 +12,22 @@ const SearchBar: React.FC = () => {
 
   const handleSearch = () => {
     updateSearchFilters({ title, location, radius });
+
+    // ✅ Log the search term to shared PyDataPRO analytics backend
+    if (title.trim()) {
+      console.log("📨 Logging search query:", `${title} ${location}`.trim());
+
+      fetch("/analytics/search-history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ query: `${title} ${location}`.trim() }),
+      }).catch((err) => {
+        console.warn("🔁 Failed to log search term:", err);
+      });
+    }
   };
 
   const handleReset = () => {

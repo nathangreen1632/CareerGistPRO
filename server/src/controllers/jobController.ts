@@ -5,9 +5,7 @@ import { getCache, setCache } from '../cache/redisCacheService.js';
 import { logUserAnalytics } from '../helpers/logUserAnalytics.js';
 import { recommendJobs } from '../helpers/recommendJobs.js';
 import { AuthenticatedRequest } from '../middleware/authMiddleware.js';
-
-
-// server/src/controllers/jobController.ts
+import { seedAllAdzunaJobs } from '../services/adzunaSeeder.js';
 
 export const getPaginatedJobs = async (req: Request, res: Response): Promise<void> => {
   const page = parseInt(req.query.page as string) || 1;
@@ -100,7 +98,6 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
   }
 };
 
-
 export const getRecommendedJobs = async (
   req: AuthenticatedRequest,
   res: Response
@@ -113,7 +110,6 @@ export const getRecommendedJobs = async (
   }
 
   try {
-    // Pull 50 most recent non-saved jobs
     const newJobs = await db.Job.findAll({
       where: { saved: false },
       order: [['createdAt', 'DESC']],
@@ -127,4 +123,27 @@ export const getRecommendedJobs = async (
     console.error('❌ Failed to fetch recommended jobs:', err);
     res.status(500).json({ error: 'Failed to fetch recommendations' });
   }
+};
+
+export const getJobBySourceId = async (req: Request, res: Response): Promise<void> => {
+  const { sourceId } = req.params;
+
+  try {
+    const job = await db.Job.findOne({ where: { sourceId } });
+
+    if (!job) {
+      res.status(404).json({ error: 'Job not found' });
+      return;
+    }
+
+    res.status(200).json(job);
+  } catch (err) {
+    console.error('❌ Failed to fetch job by sourceId:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const seedAllJobsController = async (_req: Request, res: Response): Promise<void> => {
+  await seedAllAdzunaJobs(_req, res);
+  res.status(200).json({ message: '✅ Seeding complete' });
 };
