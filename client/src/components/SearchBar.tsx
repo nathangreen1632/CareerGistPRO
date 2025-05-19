@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useJobStore } from '../store/useJobStore';
-
 import { LocateFixed } from 'lucide-react';
+import {API_BASE} from "../utils/api";
+
 
 const SearchBar: React.FC = () => {
   const { updateSearchFilters, resetSearchFilters } = useJobStore();
@@ -17,7 +18,7 @@ const SearchBar: React.FC = () => {
     if (title.trim()) {
       console.log("📨 Logging search query:", `${title} ${location}`.trim());
 
-      fetch("/analytics/search-history", {
+      fetch(`${API_BASE}/analytics/search-history`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

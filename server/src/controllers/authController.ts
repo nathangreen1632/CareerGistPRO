@@ -24,10 +24,17 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     });
 
     const token = jwt.sign(
-      { id: newUser.id, email: newUser.email, role: newUser.role },
+      {
+        sub: newUser.id,               // ✅ Use sub so PyDataPRO recognizes it
+        email: newUser.email,
+        role: newUser.role,
+        aud: 'pydatapro_user',      // ✅ Audience expected by FastAPI
+        iss: 'PyDataPro',           // ✅ Issuer expected by FastAPI
+      },
       JWT_SECRET,
       { expiresIn: '2h' }
     );
+
 
     res.status(201).json({ token });
   } catch (err) {
@@ -52,10 +59,17 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      {
+        sub: user.id,               // ✅ Use sub so PyDataPRO recognizes it
+        email: user.email,
+        role: user.role,
+        aud: 'pydatapro_user',      // ✅ Audience expected by FastAPI
+        iss: 'PyDataPro',           // ✅ Issuer expected by FastAPI
+      },
       JWT_SECRET,
       { expiresIn: '2h' }
     );
+
 
     res.json({ token });
   } catch (err) {
@@ -92,7 +106,7 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
 
   try {
     const payload = jwt.verify(token, JWT_SECRET, { ignoreExpiration: true }) as {
-      id: string;
+      sub: string;
       email: string;
       role: string;
       exp: number;
@@ -105,10 +119,17 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
     }
 
     const newToken = jwt.sign(
-      { id: payload.id, email: payload.email, role: payload.role },
+      {
+        sub: payload.sub,
+        email: payload.email,
+        role: payload.role,
+        aud: 'pydatapro_user',
+        iss: 'PyDataPro',
+      },
       JWT_SECRET,
       { expiresIn: '2h' }
     );
+
 
     res.json({ token: newToken });
   } catch (err) {
