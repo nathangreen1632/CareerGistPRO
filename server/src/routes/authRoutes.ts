@@ -7,6 +7,6 @@ const router: Router = Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.get('/me', authenticateToken, getMe);
-router.post('/refresh-token', refreshToken); // ✅ NEW route
+router.post('/refresh-token', refreshToken);
 
 export default router;
