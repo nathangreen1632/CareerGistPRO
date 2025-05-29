@@ -2,13 +2,13 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.addColumn('UserAnalytics', 'summary', {
+        await queryInterface.addColumn('user_analytics', 'summary', {
             type: Sequelize.TEXT,
             allowNull: true,
         });
     },
 
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.removeColumn('UserAnalytics', 'summary');
+        await queryInterface.removeColumn('user_analytics', 'summary');
     },
 };
