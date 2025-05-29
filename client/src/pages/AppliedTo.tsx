@@ -25,27 +25,34 @@ const AppliedTo: React.FC = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Failed to fetch applied jobs');
+          console.error('Fetch applied jobs failed:', await response.text());
+          setError('Failed to fetch applied jobs');
         }
 
         const data = await response.json();
 
-        const normalizedAppliedJobs = data.map((job: any) => ({
-          id: job.jobId,
-          title: job.title,
-          company: job.company,
-          location: job.location,
-          description: job.description,
-          summary: job.summary ?? '',
-          applyLink: job.url ?? '',
-          salaryMin: undefined,
-          salaryMax: undefined,
-          salaryPeriod: undefined,
-          benefits: [],
-          isRemote: undefined,
-          postedAt: undefined,
-          logoUrl: undefined,
+        const jobMap = new Map<string, any>();
+        jobs.forEach((j) => jobMap.set(j.sourceId ?? j.id, j));
+
+
+
+        const normalizedAppliedJobs = data.map((entry: any) => ({
+          id: entry.jobId,
+          title: entry.title,
+          company: entry.company,
+          location: entry.location,
+          description: entry.Job?.description ?? '',
+          summary: entry.Job?.summary ?? '',
+          applyLink: entry.Job?.url ?? entry.applyLink ?? '',
+          salaryMin: entry.Job?.salaryMin,
+          salaryMax: entry.Job?.salaryMax,
+          salaryPeriod: entry.Job?.salaryPeriod,
+          postedAt: entry.Job?.postedAt,
+          logoUrl: entry.Job?.logoUrl,
+          benefits: entry.Job?.benefits ?? [],
+          isRemote: entry.Job?.isRemote,
         }));
+
 
         setAppliedJobs(normalizedAppliedJobs);
       } catch (err: any) {
@@ -71,10 +78,29 @@ const AppliedTo: React.FC = () => {
     return <div className="text-center p-8 text-gray-600 dark:text-gray-400">You have not applied to any jobs yet.</div>;
   }
 
+  const handleRemoveApplied = async (jobId: string) => {
+    try {
+      const res = await fetch(`/api/applied/${jobId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) {
+        console.error('Failed to remove applied job:', await res.text());
+        return;
+      }
+
+      setAppliedJobs((prev) => prev.filter((job) => job.id !== jobId));
+    } catch (err) {
+      console.error('Unexpected error removing applied job:', err);
+    }
+  };
+
+
   return (
     <div className="px-4 sm:px-6 md:px-8 py-6 max-w-5xl mx-auto">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
-        Jobs You Applied To
+        Jobs You've Applied To
       </h1>
       <div className="space-y-6">
         {appliedJobs.map((job: UnifiedJob) => (
@@ -87,7 +113,17 @@ const AppliedTo: React.FC = () => {
             description={job.description}
             summary={job.summary}
             applyLink={job.applyLink}
+            salaryMin={job.salaryMin}
+            salaryMax={job.salaryMax}
+            salaryPeriod={job.salaryPeriod}
+            logoUrl={job.logoUrl}
+            postedAt={job.postedAt}
+            isRemote={job.isRemote}
+            isAppliedView={true}
+            showApplyButton={true}
+            onRemoveApplied={() => handleRemoveApplied(job.id)}
           />
+
         ))}
       </div>
     </div>
