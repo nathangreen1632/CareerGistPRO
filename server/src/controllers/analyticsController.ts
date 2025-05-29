@@ -49,7 +49,7 @@ export const getUserAnalyticsProfile = async (
         userId,
         action: 'favorite',
         location: {
-          [Op.ne]: '', // filter out blank strings
+          [Op.ne]: '',
         },
       },
       attributes: [
@@ -62,7 +62,7 @@ export const getUserAnalyticsProfile = async (
     });
 
     const locationSpread = locationSpreadRaw.map((row: any) => ({
-      location: row.region.trim(), // ensure whitespace is removed
+      location: row.region.trim(),
       count: Number(row.count),
     }));
 
