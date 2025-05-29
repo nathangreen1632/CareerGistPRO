@@ -26,7 +26,7 @@ export const summarizeJobDescription = async (req: Request, res: Response): Prom
       messages: [
         {
           role: 'user',
-          content: `Summarize the following job description in 3-4 concise sentences:\n\n${description}`,
+          content: `Summarize the following job description in 4-5 concise sentences:\n\n${description}`,
         },
       ],
     });
