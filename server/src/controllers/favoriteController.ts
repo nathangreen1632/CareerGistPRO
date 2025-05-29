@@ -26,12 +26,13 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
     !userId ||
     !jobId ||
     !title ||
+    !company ||
+    !location ||
     !description ||
     !applyLink ||
     !summary ||
     salaryMin == null ||
-    salaryMax == null ||
-    !salaryPeriod
+    salaryMax == null
   ) {
     res.status(400).json({ error: 'Missing required fields.' });
     return;
@@ -48,7 +49,7 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
       location: location ?? 'Unknown Location',
       description: '',
       url: applyLink,
-      summary,
+      summary: summary ?? '',
       logoUrl: logoUrl ?? null,
       postedAt: postedAt ?? null,
       saved: true,
@@ -62,7 +63,7 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
       location: job.location,
       description: job.description ?? '',
       url: job.url ?? '',
-      summary: job.summary,
+      summary: summary ?? '',
       logoUrl: job.logoUrl,
       postedAt: job.postedAt,
       salaryMin,
