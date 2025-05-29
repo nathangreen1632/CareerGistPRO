@@ -6,7 +6,7 @@ const router: Router = express.Router();
 
 router.get('/', getPaginatedJobs);
 router.get('/recommendations', getRecommendedJobs);
-router.get('/:sourceId', getJobBySourceId); // ✅ for React route fetch
+router.get('/:sourceId', getJobBySourceId);
 router.post('/seed-all', seedAllJobsController);
 
 
