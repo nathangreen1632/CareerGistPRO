@@ -30,8 +30,9 @@ const Layout: React.FC = () => {
           )}
           {token && (
             <>
-              <Link to="/favorites" className="text-gray-600 dark:text-gray-300 hover:underline">Favorites</Link>
               <Link to="/profile" className="text-gray-600 dark:text-gray-300 hover:underline">Profile</Link>
+              <Link to="/favorites" className="text-gray-600 dark:text-gray-300 hover:underline">Favorites</Link>
+              <Link to="/applied" className="text-gray-600 dark:text-gray-300 hover:underline">Applied</Link>
               <button
                 onClick={handleLogout}
                 className="text-gray-600 dark:text-gray-300 hover:underline focus:outline-none"
