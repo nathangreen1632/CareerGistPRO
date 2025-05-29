@@ -106,3 +106,10 @@ export function initUserAnalyticsModel(sequelize: Sequelize): void {
     }
   );
 }
+
+export function associateUserAnalyticsModel(models: any): void {
+  UserAnalytics.belongsTo(models.Job, {
+    foreignKey: 'jobId',
+    as: 'Job',
+  });
+}
