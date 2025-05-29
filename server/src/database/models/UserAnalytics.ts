@@ -3,8 +3,9 @@ import { DataTypes, Sequelize, Model, Optional } from 'sequelize';
 interface UserAnalyticsAttributes {
   id: string;
   userId: string;
-  action: 'search' | 'favorite';
+  action: 'search' | 'favorite' | 'applied';
   query?: string;
+  description?: string;
   jobId?: string;
   title?: string;
   location?: string;
@@ -13,16 +14,18 @@ interface UserAnalyticsAttributes {
   salaryMax?: number;
   timestamp?: Date;
   applyLink?: string;
+  summary?: string; // Added summary field
 }
 
-type UserAnalyticsCreationAttributes = Optional<UserAnalyticsAttributes, 'id' | 'query' | 'jobId' | 'title' | 'location' | 'company' | 'salaryMin' | 'salaryMax' | 'timestamp' | 'applyLink'>;
+type UserAnalyticsCreationAttributes = Optional<UserAnalyticsAttributes, 'id' | 'query' | 'description' | 'jobId' | 'title' | 'location' | 'company' | 'salaryMin' | 'salaryMax' | 'timestamp' | 'applyLink'>;
 
 export class UserAnalytics extends Model<UserAnalyticsAttributes, UserAnalyticsCreationAttributes>
   implements UserAnalyticsAttributes {
   public id!: string;
   public userId!: string;
-  public action!: 'search' | 'favorite';
+  public action!: 'search' | 'favorite' | 'applied';
   public query?: string;
+  public description?: string;
   public jobId?: string;
   public title?: string;
   public location?: string;
@@ -31,6 +34,7 @@ export class UserAnalytics extends Model<UserAnalyticsAttributes, UserAnalyticsC
   public salaryMax?: number;
   public timestamp?: Date;
   public applyLink?: string;
+  public summary?: string;
 }
 
 export function initUserAnalyticsModel(sequelize: Sequelize): void {
@@ -46,10 +50,18 @@ export function initUserAnalyticsModel(sequelize: Sequelize): void {
         allowNull: false,
       },
       action: {
-        type: DataTypes.ENUM('search', 'favorite'),
+        type: DataTypes.ENUM('search', 'favorite', 'applied'),
         allowNull: false,
       },
       query: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      summary: {
         type: DataTypes.STRING,
         allowNull: true,
       },
