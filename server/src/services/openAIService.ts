@@ -10,49 +10,50 @@ export const generateEnhancedJobData = async (jobData: any) => {
       : jobData.jobs ?? jobData.listings ?? Object.values(jobData);
 
     if (!Array.isArray(jobs) || jobs.length === 0) {
-      throw new Error("Job data format is incorrect or empty.");
+      console.error("Job data is not in the expected format or is empty.");
+      return [];
     }
 
     const MAX_JOBS = 15;
     const limitedJobs = jobs.slice(0, MAX_JOBS);
 
     const prompt = `You are an API that returns JSON. 
-Format your response as a **valid JSON array** of job objects without any markdown formatting, text explanations, or backticks. 
-Here is the job data that needs summarization and enhancement:
+      Format your response as a **valid JSON array** of job objects without any markdown formatting, text explanations, or backticks. 
+      Here is the job data that needs summarization and enhancement:
 
-${JSON.stringify(limitedJobs, null, 2)}
-
-The JSON structure must follow this format and order:
-[
-  {
-    "job_id": "If available",
-    "job_title": "Job Title",
-    "job_details": "If available",
-    "employer_name": "Company Name",
-    "job_publisher": "If available",
-    "employer_name": "Company Name",
-    "job_location": "City, State, Country",
-    "job_description": "Give a detailed, but concise, job description that is **500 words or less**",
-    "job_employment_type": "If available",
-    "job_apply_link": "URL to the job posting",
-    "job_highlights": {
-      "Responsibilities": "If available",
-      "Qualifications": "If available",
-      "Benefits": "If available",
-    },
-    "job_is_remote": "If available",
-    "job_posted_at": "If available",
-    "job_salary": "If available",
-    "job_is_remote": "If available",
-    "responsibilities": "Give a detailed, but concise, job description that is **250 words or less**",
-    "qualifications": "List of qualifications",
-    "benefits": ["Benefit 1", "Benefit 2", "Benefit 3"],
-    "url": "URL to the job posting",
-    "job_posted_at": "If available",
-  }
-]
-
-Ensure there is no additional formatting, explanations, or surrounding text. Return **ONLY** a valid JSON array.`;
+      ${JSON.stringify(limitedJobs, null, 2)}
+      
+      The JSON structure must follow this format and order:
+      [
+        {
+          "job_id": "If available",
+          "job_title": "Job Title",
+          "job_details": "If available",
+          "employer_name": "Company Name",
+          "job_publisher": "If available",
+          "employer_name": "Company Name",
+          "job_location": "City, State, Country",
+          "job_description": "Give a detailed, but concise, job description that is **500 words or less**",
+          "job_employment_type": "If available",
+          "job_apply_link": "URL to the job posting",
+          "job_highlights": {
+            "Responsibilities": "If available",
+            "Qualifications": "If available",
+            "Benefits": "If available",
+          },
+          "job_is_remote": "If available",
+          "job_posted_at": "If available",
+          "job_salary": "If available",
+          "job_is_remote": "If available",
+          "responsibilities": "Give a detailed, but concise, job description that is **250 words or less**",
+          "qualifications": "List of qualifications",
+          "benefits": ["Benefit 1", "Benefit 2", "Benefit 3"],
+          "url": "URL to the job posting",
+          "job_posted_at": "If available",
+        }
+      ]
+      
+      Ensure there is no additional formatting, explanations, or surrounding text. Return **ONLY** a valid JSON array.`;
 
     const response: Response = await fetch(CAREER_GIST_URL ?? "", {
       method: "POST",
