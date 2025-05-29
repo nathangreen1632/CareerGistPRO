@@ -41,15 +41,14 @@ const Favorites: React.FC = () => {
           title: fav.title,
           company: fav.company,
           location: fav.location,
-          description: fav.description,
-          summary: fav.summary ?? '', // 👈 pull from Favorite, not from fav.Job.summary
+          description: fav.description ?? '',
+          summary: fav.summary ?? '',
           applyLink: fav.url ?? '',
           logoUrl: fav.logoUrl,
           postedAt: fav.postedAt,
           salaryMin: fav.salaryMin,
           salaryMax: fav.salaryMax,
           salaryPeriod: fav.salaryPeriod,
-          benefits: [],
           isRemote: undefined,
         }));
 
@@ -109,10 +108,10 @@ const Favorites: React.FC = () => {
               salaryMin={job.salaryMin}
               salaryMax={job.salaryMax}
               salaryPeriod={job.salaryPeriod}
-              benefits={job.benefits}
               postedAt={job.postedAt ?? undefined}
               logoUrl={job.logoUrl}
               isFavorited={true}
+              showApplyButton={true}
               onUnfavorite={() =>
                 setFavoriteJobs((prev) => prev.filter((j: UnifiedJob): boolean => j.id !== job.id))
               }
