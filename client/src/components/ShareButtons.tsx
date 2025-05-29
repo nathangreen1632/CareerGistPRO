@@ -5,10 +5,16 @@ interface Props {
   sourceId: string;
   title: string;
   company?: string;
+  isAppliedView?: boolean;
+  onRemoveApplied?: () => void;
 }
 
-export const ShareButtons: React.FC<Props> = ({ sourceId }) => {
-  // ✅ Use the SSR share endpoint for OG scraping
+
+export const ShareButtons: React.FC<Props> = ({
+                                                sourceId,
+                                                isAppliedView = false,
+                                                onRemoveApplied
+                                              }) => {
   const shareUrl = `https://www.careergistpro.com/share/${sourceId}`;
   const encodedUrl = encodeURIComponent(shareUrl);
 
@@ -35,6 +41,14 @@ export const ShareButtons: React.FC<Props> = ({ sourceId }) => {
       >
         <FaFacebook size={18} />
       </a>
+      {isAppliedView && onRemoveApplied && (
+        <button
+          onClick={onRemoveApplied}
+          className="text-md text-red-500 hover:text-red-700 ml-auto font-medium transition"
+        >
+          Remove
+        </button>
+      )}
     </div>
   );
 };
