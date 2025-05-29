@@ -15,6 +15,8 @@ interface LogAnalyticsOptions {
 
 export const logUserAnalytics = async (data: LogAnalyticsOptions): Promise<void> => {
   try {
+    if (!data.userId) return;
+
     await UserAnalytics.create({
       ...data,
       timestamp: new Date(),
