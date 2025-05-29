@@ -1,5 +1,3 @@
-// server/src/controllers/favoriteController.ts
-
 import { Response } from 'express';
 import db from '../database/models/index.js';
 import { AuthenticatedRequest } from '../middleware/authMiddleware.js';
@@ -40,7 +38,6 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
   }
 
   try {
-    // Step 1: Ensure Job exists in Jobs table
     let job = await db.Job.findOne({ where: { sourceId: jobId } });
 
     job ??= await db.Job.create({
@@ -49,7 +46,7 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
       title,
       company: company ?? 'Unknown Company',
       location: location ?? 'Unknown Location',
-      description,
+      description: '',
       url: applyLink,
       summary,
       logoUrl: logoUrl ?? null,
@@ -57,14 +54,13 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
       saved: true,
     });
 
-    // Step 2: Add to Favorites table
     await db.Favorite.create({
       userId,
       jobId: job.id,
       title: job.title,
       company: job.company,
       location: job.location,
-      description: job.description,
+      description: job.description ?? '',
       url: job.url ?? '',
       summary: job.summary,
       logoUrl: job.logoUrl,
@@ -74,7 +70,6 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
       salaryPeriod,
     });
 
-    // ✅ Step 3: Log analytics (non-blocking)
     if (userId) {
       await logUserAnalytics({
         userId,
@@ -83,11 +78,11 @@ export const addFavorite = async (req: AuthenticatedRequest, res: Response): Pro
         title: job.title,
         company: job.company ?? 'Unknown Company',
         location: job.location ?? 'Unknown Location',
+        description: job.description ?? '',
         salaryMin: typeof salaryMin === 'number' ? salaryMin : 0,
         salaryMax: typeof salaryMax === 'number' ? salaryMax : 0,
       });
     }
-    console.log('✅ User analytics logged successfully');
     res.status(201).json({ message: 'Job added to favorites.' });
   } catch (error: any) {
     console.error('❌ Error adding favorite:', error);
@@ -130,12 +125,10 @@ export const removeFavorite = async (
   }
 
   try {
-    // Delete the favorite
     await db.Favorite.destroy({
       where: { userId, jobId }
     });
 
-    // Also delete associated analytics
     await db.UserAnalytics.destroy({
       where: {
         userId,
