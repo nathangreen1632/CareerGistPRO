@@ -58,11 +58,11 @@ export function initUserAnalyticsModel(sequelize: Sequelize): void {
         allowNull: true,
       },
       description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       summary: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
       },
       jobId: {
