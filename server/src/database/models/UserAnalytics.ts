@@ -66,7 +66,7 @@ export function initUserAnalyticsModel(sequelize: Sequelize): void {
         allowNull: true,
       },
       jobId: {
-        type: DataTypes.STRING,
+        type: DataTypes.UUID,
         allowNull: true,
       },
       title: {
