@@ -24,17 +24,16 @@ const AppliedTo: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!response.ok) {
-          console.error('Fetch applied jobs failed:', await response.text());
-          setError('Failed to fetch applied jobs');
-        }
-
         const data = await response.json();
+
+        if (!response.ok) {
+          console.error('Fetch applied jobs failed:', data);
+          setError(data.error || 'Failed to fetch applied jobs');
+          return;
+        }
 
         const jobMap = new Map<string, any>();
         jobs.forEach((j) => jobMap.set(j.sourceId ?? j.id, j));
-
-
 
         const normalizedAppliedJobs = data.map((entry: any) => ({
           id: entry.jobId,
@@ -53,7 +52,6 @@ const AppliedTo: React.FC = () => {
           isRemote: entry.Job?.isRemote,
         }));
 
-
         setAppliedJobs(normalizedAppliedJobs);
       } catch (err: any) {
         console.error('Error fetching applied jobs:', err);
@@ -62,6 +60,7 @@ const AppliedTo: React.FC = () => {
         setLoading(false);
       }
     };
+
 
     void fetchAppliedJobs();
   }, [isLoggedIn, token]);
