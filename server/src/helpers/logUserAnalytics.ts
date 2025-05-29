@@ -1,5 +1,3 @@
-// server/src/helpers/logUserAnalytics.ts
-
 import { UserAnalytics } from '../database/models/UserAnalytics.js';
 
 interface LogAnalyticsOptions {
@@ -10,6 +8,7 @@ interface LogAnalyticsOptions {
   title?: string;
   location?: string;
   company?: string;
+  description?: string;
   salaryMin?: number;
   salaryMax?: number;
 }
