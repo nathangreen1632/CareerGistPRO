@@ -73,3 +73,34 @@ export const getUserAnalyticsProfile = async (
     res.status(500).json({ error: 'Failed to fetch analytics.' });
   }
 };
+
+export const logSearchHistory = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  const userId = req.user?.id;
+  const { query, location, title, salaryMin, salaryMax } = req.body;
+
+  if (!userId) {
+    res.status(204).end();
+    return;
+  }
+
+  try {
+    await db.UserAnalytics.create({
+      userId,
+      action: 'search',
+      query,
+      title,
+      location,
+      salaryMin: salaryMin ?? null,
+      salaryMax: salaryMax ?? null,
+      timestamp: new Date(),
+    });
+
+    res.status(201).json({ message: 'Search history logged.' });
+  } catch (error: any) {
+    console.error('❌ Failed to log search history:', error);
+    res.status(500).json({ error: 'Failed to log search history.' });
+  }
+};
