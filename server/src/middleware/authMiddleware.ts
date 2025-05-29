@@ -8,7 +8,7 @@ export interface AuthenticatedRequest extends Request {
     id: string;
     email: string;
     role: string;
-  };
+  } | undefined;
 }
 
 export const authenticateToken = (
@@ -43,4 +43,33 @@ export const authenticateToken = (
       res.status(403).json({ error: 'Invalid token' });
     }
   }
+};
+
+export const optionalAuth = (
+  req: AuthenticatedRequest,
+  _res: Response,
+  next: NextFunction
+): void => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader?.split(' ')[1];
+
+  if (!token) {
+    req.user = undefined;
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
+
+    req.user = {
+      id: decoded.id ?? decoded.sub,
+      email: decoded.email,
+      role: decoded.role,
+    };
+  } catch (err) {
+    console.warn('⚠️ Optional auth token verification failed:', err);
+    req.user = undefined;
+  }
+
+  next();
 };
