@@ -13,15 +13,14 @@ const sequelize = new Sequelize(process.env.DATABASE_URL!, {
   logging: false,
 });
 
-// Initialize all models
 initUserModel(sequelize);
 initFavoriteModel(sequelize);
 initJobModel(sequelize);
 initUserAnalyticsModel(sequelize);
 
-// 🛠 Setup associations AFTER models initialized
 Favorite.belongsTo(Job, { foreignKey: 'jobId', targetKey: 'id' });
 Job.hasMany(Favorite, { foreignKey: 'jobId', sourceKey: 'id' });
+UserAnalytics.belongsTo(Job, { foreignKey: 'jobId' });
 
 const db = {
   sequelize,
