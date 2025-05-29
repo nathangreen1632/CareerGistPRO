@@ -39,7 +39,7 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
           description: job.description ?? '',
           company: job.company?.display_name ?? '',
           location: job.location?.display_name ?? '',
-          summary: job.description?.slice(0, 250) ?? '',
+          summary: '',
           url: job.redirect_url ?? '',
           logoUrl: job.company?.logo ?? '',
           postedAt: job.created ?? null,
