@@ -153,6 +153,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           applyLink,
           salaryMin,
           salaryMax,
+          summary: summary ?? '',
+          description: description ?? '',
+          postedAt,
+          logoUrl,
+          salaryPeriod,
         }),
       });
     } catch (err) {
@@ -161,6 +166,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
 
     window.open(applyLink, '_blank');
   };
+
 
 
   let jobDescriptionBlock: JSX.Element;
@@ -275,9 +281,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             onRemoveApplied={props.onRemoveApplied}
           />
         )}
-
-
-
       </div>
     </div>
   );
