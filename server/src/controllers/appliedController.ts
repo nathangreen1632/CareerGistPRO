@@ -16,7 +16,7 @@ export const getAppliedJobs = async (
   try {
     const appliedJobs = await db.UserAnalytics.findAll({
       where: { userId, action: 'applied' },
-      include: [{ model: db.Job, required: true }],
+      include: [{ model: db.Job, as: 'Job', required: true }],
       order: [['timestamp', 'DESC']],
     });
 
