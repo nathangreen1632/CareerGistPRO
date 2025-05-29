@@ -34,7 +34,7 @@ export const trackJobApplication = async (
   const userId = req.user?.id;
 
   const {
-    jobId,
+    jobId: sourceJobId,
     title,
     company,
     location,
@@ -48,16 +48,27 @@ export const trackJobApplication = async (
     salaryPeriod,
   } = req.body;
 
-  if (!userId || !jobId || !title || !company || !location) {
+  if (
+    !userId ||
+    !sourceJobId ||
+    !title ||
+    !company ||
+    !location ||
+    salaryMin == null ||
+    salaryMax == null ||
+    !applyLink ||
+    !summary ||
+    !description
+  ) {
     res.status(400).json({ error: 'Missing required fields.' });
     return;
   }
 
   try {
-    await db.Job.findOrCreate({
-      where: { sourceId: jobId },
+    const [job, created] = await db.Job.findOrCreate({
+      where: { sourceId: sourceJobId },
       defaults: {
-        sourceId: jobId,
+        sourceId: sourceJobId,
         title,
         company,
         location,
@@ -72,10 +83,26 @@ export const trackJobApplication = async (
       },
     });
 
+    if (!created) {
+      await job.update({
+        title,
+        company,
+        location,
+        url: applyLink ?? '',
+        salaryMin: typeof salaryMin === 'number' ? salaryMin : 0,
+        salaryMax: typeof salaryMax === 'number' ? salaryMax : 0,
+        description: description ?? '',
+        summary: summary ?? '',
+        postedAt: postedAt ?? new Date().toISOString(),
+        salaryPeriod: salaryPeriod ?? 'unknown',
+        logoUrl: logoUrl ?? null,
+      });
+    }
+
     await db.UserAnalytics.create({
       userId,
       action: 'applied',
-      jobId,
+      jobId: job.id,
       title,
       company,
       location,
