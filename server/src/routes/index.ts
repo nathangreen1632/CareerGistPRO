@@ -1,5 +1,3 @@
-// src/routes/index.ts
-
 import { Router } from 'express';
 import authRoutes from './authRoutes.js';
 import favoriteRoutes from './favoriteRoutes.js';
