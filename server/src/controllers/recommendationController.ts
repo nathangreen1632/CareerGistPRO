@@ -1,5 +1,3 @@
-// server/src/controllers/recommendationController.ts
-
 import { Request, Response } from 'express';
 import db from '../database/models/index.js';
 import { recommendJobs } from '../helpers/recommendJobs.js';

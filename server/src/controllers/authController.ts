@@ -25,11 +25,11 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     const token = jwt.sign(
       {
-        sub: newUser.id,               // ✅ Use sub so PyDataPRO recognizes it
+        sub: newUser.id,
         email: newUser.email,
         role: newUser.role,
-        aud: 'pydatapro_user',      // ✅ Audience expected by FastAPI
-        iss: 'PyDataPro',           // ✅ Issuer expected by FastAPI
+        aud: 'pydatapro_user',
+        iss: 'PyDataPro',
       },
       JWT_SECRET,
       { expiresIn: '2h' }
@@ -60,11 +60,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     const token = jwt.sign(
       {
-        sub: user.id,               // ✅ Use sub so PyDataPRO recognizes it
+        sub: user.id,
         email: user.email,
         role: user.role,
-        aud: 'pydatapro_user',      // ✅ Audience expected by FastAPI
-        iss: 'PyDataPro',           // ✅ Issuer expected by FastAPI
+        aud: 'pydatapro_user',
+        iss: 'PyDataPro',
       },
       JWT_SECRET,
       { expiresIn: '2h' }

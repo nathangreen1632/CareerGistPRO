@@ -1,5 +1,3 @@
-// server/src/server.ts
-
 import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
@@ -14,10 +12,10 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 import interviewRoutes from './routes/interviewRoutes.js';
 import recommendationRoutes from './routes/recommendationRoutes.js';
 import { authenticateToken } from './middleware/authMiddleware.js';
+import appliedRoutes from './routes/appliedRoutes.js';
 
 dotenv.config();
 
-// ✅ Manual fix for __dirname
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -31,24 +29,20 @@ app.get('/og-default.jpg', (_req, res) => {
   res.sendFile(path.join(__dirname, '../../client/public/og-default.jpg'));
 });
 
-
-// ✅ Serve static frontend assets
 app.use(express.static(path.join(__dirname, '../../client/public')));
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
-// ✅ Public API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/summaries', summaryRoutes);
 
-// ✅ Protected API routes
-app.use('/api/favorites', authenticateToken, favoriteRoutes);
+app.use('/api/applied', authenticateToken, appliedRoutes);
 app.use('/api/analytics', authenticateToken, analyticsRoutes);
+app.use('/api/favorites', authenticateToken, favoriteRoutes);
 app.use('/api/interview', authenticateToken, interviewRoutes);
 app.use('/api/recommendations', authenticateToken, recommendationRoutes);
 
-// ✅ SSR route for Open Graph social previews
-// server/src/server.ts
+
 app.get('/share/:sourceId', async (req: Request, res: Response): Promise<void> => {
   const { sourceId } = req.params;
 
@@ -95,7 +89,6 @@ app.get('/share/:sourceId', async (req: Request, res: Response): Promise<void> =
       `;
       res.status(200).send(html);
     } else {
-      // ✅ Real 302 redirect for humans
       res.redirect(302, jobUrl);
     }
   } catch (err: any) {
@@ -104,7 +97,6 @@ app.get('/share/:sourceId', async (req: Request, res: Response): Promise<void> =
   }
 });
 
-// ✅ React fallback for SPA
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });

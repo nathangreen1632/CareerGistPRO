@@ -1,5 +1,3 @@
-// client/src/pages/Home.tsx
-
 import React, { useEffect } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from '../components/JobCard';
@@ -46,8 +44,9 @@ const Home: React.FC = () => {
 
       {jobs.map((job) => (
         <JobCard
-          key={job.id}
-          id={job.id}
+          key={job.sourceId ?? job.id}
+          id={job.sourceId ?? job.id}
+          sourceId={job.sourceId ?? job.id} // <-- crucial!
           title={job.title}
           company={job.company}
           location={job.location}
@@ -57,9 +56,9 @@ const Home: React.FC = () => {
           salaryMin={job.salaryMin}
           salaryMax={job.salaryMax}
           salaryPeriod={job.salaryPeriod}
-          benefits={job.benefits}
           postedAt={job.postedAt ?? undefined}
           logoUrl={job.logoUrl}
+          showApplyButton={false}
         />
       ))}
 

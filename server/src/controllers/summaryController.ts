@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { OpenAI } from 'openai';
-import { getCache, setCache } from '../cache/redisCacheService.js';
+import db from '../database/models/index.js';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -12,27 +12,27 @@ export const summarizeJobDescription = async (req: Request, res: Response): Prom
     return;
   }
 
-  const cacheKey = `summary:${jobId}`;
-
   try {
-    const cached = await getCache(cacheKey);
-    if (cached) {
-      res.json({ summary: cached, source: 'cache' });
-      return;
-    }
-
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
         {
           role: 'user',
-          content: `Summarize the following job description in 3-4 concise sentences:\n\n${description}`,
+          content: `Summarize the following job description in 4-5 concise sentences:\n\n${description}`,
         },
       ],
     });
 
-    const summary = completion.choices[0].message.content;
-    await setCache(cacheKey, summary);
+    const summary = completion.choices[0].message.content ?? 'Summary not available.';
+
+    const job = await db.Job.findOne({ where: { sourceId: jobId } });
+
+    if (!job) {
+      res.status(404).json({ error: 'Job not found. Cannot update summary.' });
+      return;
+    }
+
+    await job.update({ summary });
 
     res.json({ summary, source: 'openai' });
   } catch (error) {

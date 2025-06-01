@@ -1,11 +1,10 @@
-// src/controllers/userController.ts
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import db from '../database/models/index.js';
 
 const { User } = db;
 
-// GET /users
+
 export const getAllUsers = async (_req: Request, res: Response): Promise<void> => {
   try {
     const users = await User.findAll({
@@ -18,7 +17,6 @@ export const getAllUsers = async (_req: Request, res: Response): Promise<void> =
   }
 };
 
-// GET /users/:id
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
@@ -36,7 +34,6 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-// POST /users
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   const { firstName, lastName, email, location, password } = req.body;
 
@@ -71,7 +68,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// PUT /users/:id
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { firstName, lastName, email, location, password } = req.body;
@@ -105,7 +101,6 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// DELETE /users/:id
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
 

@@ -107,8 +107,6 @@ export function initJobModel(sequelize: Sequelize): void {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-
-      // ✅ New fields
       salaryMin: {
         type: DataTypes.DOUBLE,
         allowNull: true,

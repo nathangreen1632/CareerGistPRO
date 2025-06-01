@@ -48,6 +48,7 @@ export interface JobHighlights {
 
 export interface UnifiedJob {
   id: string;
+  sourceId?: string;
   title: string;
   company?: string;
   location?: string;
