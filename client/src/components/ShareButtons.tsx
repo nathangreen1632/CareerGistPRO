@@ -28,7 +28,7 @@ export const ShareButtons: React.FC<Props> = ({
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Share on LinkedIn"
-        className="text-blue-400 hover:text-blue-600"
+        className="text-white hover:text-gray-300"
       >
         <FaLinkedin size={18} />
       </a>
@@ -37,7 +37,7 @@ export const ShareButtons: React.FC<Props> = ({
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Share on Facebook"
-        className="text-blue-400 hover:text-blue-600"
+        className="text-white hover:text-gray-300"
       >
         <FaFacebook size={18} />
       </a>
