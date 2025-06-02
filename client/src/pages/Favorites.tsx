@@ -88,6 +88,10 @@ const Favorites: React.FC = () => {
     return <div className="text-center p-8 text-gray-600 dark:text-gray-400">You have no favorited jobs yet.</div>;
   }
 
+  const uniqueFavoriteJobs = Array.from(
+    new Map(favoriteJobs.map(job => [job.id, job])).values()
+  );
+
   return (
     <div className="px-4 sm:px-6 md:px-10 py-6 max-w-6xl mx-auto">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
@@ -95,7 +99,7 @@ const Favorites: React.FC = () => {
       </h1>
 
       <div className="space-y-6">
-        {favoriteJobs.map((job) => (
+        {uniqueFavoriteJobs.map((job) => (
           <div key={job.id} className="relative">
             <JobCard
               id={job.id}
