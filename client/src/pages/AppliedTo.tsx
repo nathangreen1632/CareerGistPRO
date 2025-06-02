@@ -28,7 +28,7 @@ const AppliedTo: React.FC = () => {
 
         if (!response.ok) {
           console.error('Fetch applied jobs failed:', data);
-          setError(data.error || 'Failed to fetch applied jobs');
+          setError(data.error ?? 'Failed to fetch applied jobs');
           return;
         }
 
@@ -95,6 +95,9 @@ const AppliedTo: React.FC = () => {
     }
   };
 
+  const uniqueAppliedJobs = Array.from(
+    new Map(appliedJobs.map(job => [job.id, job])).values()
+  );
 
   return (
     <div className="px-4 sm:px-6 md:px-8 py-6 max-w-5xl mx-auto">
@@ -102,7 +105,7 @@ const AppliedTo: React.FC = () => {
         Jobs You've Applied To
       </h1>
       <div className="space-y-6">
-        {appliedJobs.map((job: UnifiedJob) => (
+        {uniqueAppliedJobs.map((job: UnifiedJob) => (
           <JobCard
             key={job.id}
             id={job.id}
