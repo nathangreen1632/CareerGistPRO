@@ -36,7 +36,6 @@ const RecommendedJobs: React.FC = () => {
             salaryMin={job.salaryMin}
             salaryMax={job.salaryMax}
             salaryPeriod={job.salaryPeriod}
-            benefits={job.benefits}
             isRemote={job.isRemote}
             postedAt={job.postedAt ?? undefined}
             logoUrl={job.logoUrl}

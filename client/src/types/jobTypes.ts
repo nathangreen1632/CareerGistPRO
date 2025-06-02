@@ -47,8 +47,8 @@ export interface JobHighlights {
 // client/src/types/jobTypes.ts
 
 export interface UnifiedJob {
+  sourceId: string;
   id: string;
-  sourceId?: string;
   title: string;
   company?: string;
   location?: string;

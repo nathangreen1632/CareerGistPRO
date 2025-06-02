@@ -167,8 +167,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     window.open(applyLink, '_blank');
   };
 
-
-
   let jobDescriptionBlock: JSX.Element;
 
   if (summary || description) {
