@@ -191,8 +191,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }
 
   return (
-    <div className="relative bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full max-w-screen-sm sm:max-w-2xl md:max-w-3xl mx-auto my-4">
-      {typeof matchScore === 'number' && (
+    <div className="relative bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full my-2 flex flex-col">
+    {typeof matchScore === 'number' && (
         <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
           Match Score: {matchScore}%
         </div>
