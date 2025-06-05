@@ -42,25 +42,28 @@ const Home: React.FC = () => {
         </div>
       )}
 
-      {jobs.map((job) => (
-        <JobCard
-          key={job.sourceId ?? job.id}
-          id={job.sourceId ?? job.id}
-          sourceId={job.sourceId ?? job.id} // <-- crucial!
-          title={job.title}
-          company={job.company}
-          location={job.location}
-          description={job.description}
-          summary={job.summary}
-          applyLink={job.applyLink}
-          salaryMin={job.salaryMin}
-          salaryMax={job.salaryMax}
-          salaryPeriod={job.salaryPeriod}
-          postedAt={job.postedAt ?? undefined}
-          logoUrl={job.logoUrl}
-          showApplyButton={false}
-        />
-      ))}
+      {/* Two-column grid container for JobCards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {jobs.map((job) => (
+          <JobCard
+            key={job.sourceId ?? job.id}
+            id={job.sourceId ?? job.id}
+            sourceId={job.sourceId ?? job.id} // <-- crucial!
+            title={job.title}
+            company={job.company}
+            location={job.location}
+            description={job.description}
+            summary={job.summary}
+            applyLink={job.applyLink}
+            salaryMin={job.salaryMin}
+            salaryMax={job.salaryMax}
+            salaryPeriod={job.salaryPeriod}
+            postedAt={job.postedAt ?? undefined}
+            logoUrl={job.logoUrl}
+            showApplyButton={false}
+          />
+        ))}
+      </div>
 
       {isLoading && jobs.length > 0 && (
         <div className="text-center text-gray-600 dark:text-gray-400">
