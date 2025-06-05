@@ -35,9 +35,9 @@ app.use(express.static(path.join(__dirname, '../../client/dist')));
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/summaries', summaryRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.use('/api/applied', authenticateToken, appliedRoutes);
-app.use('/api/analytics', authenticateToken, analyticsRoutes);
 app.use('/api/favorites', authenticateToken, favoriteRoutes);
 app.use('/api/interview', authenticateToken, interviewRoutes);
 app.use('/api/recommendations', authenticateToken, recommendationRoutes);
