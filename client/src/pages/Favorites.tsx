@@ -93,38 +93,38 @@ const Favorites: React.FC = () => {
   );
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6 max-w-6xl mx-auto">
+    <div className="container mx-auto px-6 py-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Your Favorited Jobs
       </h1>
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {uniqueFavoriteJobs.map((job) => (
-          <div key={job.id} className="relative">
-            <JobCard
-              id={job.id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              description={job.description}
-              summary={job.summary}
-              applyLink={job.applyLink}
-              salaryMin={job.salaryMin}
-              salaryMax={job.salaryMax}
-              salaryPeriod={job.salaryPeriod}
-              postedAt={job.postedAt ?? undefined}
-              logoUrl={job.logoUrl}
-              isFavorited={true}
-              showApplyButton={true}
-              onUnfavorite={() =>
-                setFavoriteJobs((prev) => prev.filter((j: UnifiedJob): boolean => j.id !== job.id))
-              }
-            />
-          </div>
+          <JobCard
+            key={job.id}
+            id={job.id}
+            title={job.title}
+            company={job.company}
+            location={job.location}
+            description={job.description}
+            summary={job.summary}
+            applyLink={job.applyLink}
+            salaryMin={job.salaryMin}
+            salaryMax={job.salaryMax}
+            salaryPeriod={job.salaryPeriod}
+            postedAt={job.postedAt ?? undefined}
+            logoUrl={job.logoUrl}
+            isFavorited={true}
+            showApplyButton={true}
+            onUnfavorite={() =>
+              setFavoriteJobs((prev) => prev.filter((j: UnifiedJob) => j.id !== job.id))
+            }
+          />
         ))}
       </div>
     </div>
   );
+
 };
 
 export default Favorites;
