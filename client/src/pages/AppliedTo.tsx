@@ -100,11 +100,12 @@ const AppliedTo: React.FC = () => {
   );
 
   return (
-    <div className="px-4 sm:px-6 md:px-8 py-6 max-w-5xl mx-auto">
+    <div className="container mx-auto px-6 py-8">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Jobs You've Applied To
       </h1>
-      <div className="space-y-6">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {uniqueAppliedJobs.map((job: UnifiedJob) => (
           <JobCard
             key={job.id}
@@ -125,11 +126,11 @@ const AppliedTo: React.FC = () => {
             showApplyButton={true}
             onRemoveApplied={() => handleRemoveApplied(job.id)}
           />
-
         ))}
       </div>
     </div>
   );
+
 };
 
 export default AppliedTo;
