@@ -1,8 +1,10 @@
+// components/JobCard.tsx
+
 import React, { useState, useEffect } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import SkeletonLoader from "./SkeletonLoader";
 import toast from "react-hot-toast";
-import {ShareButtons} from "./ShareButtons";
+import { ShareButtons } from "./ShareButtons";
 
 interface JobCardProps {
   id: string;
@@ -177,9 +179,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     );
   } else if (props.isAppliedView) {
     jobDescriptionBlock = (
-      <p className="text-sm text-gray-500 italic">
-        No job description available.
-      </p>
+      <p className="text-sm text-gray-500 italic">No job description available.</p>
     );
   } else {
     jobDescriptionBlock = (
@@ -191,10 +191,20 @@ const JobCard: React.FC<JobCardProps> = (props) => {
   }
 
   return (
-    <div className="relative bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full my-2 flex flex-col">
-    {typeof matchScore === 'number' && (
-        <div className="absolute top-4 right-4 bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-          Match Score: {matchScore}%
+    <div className="relative bg-white dark:bg-gray-800 px-4 py-4 sm:px-6 sm:py-6 rounded-2xl shadow-md hover:shadow-lg transition-all w-full my-2 flex flex-col">
+      {typeof matchScore === 'number' && (
+        <div className="self-end mb-1">
+          <div className="bg-emerald-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow inline-block">
+            Match Score: {matchScore}%
+          </div>
+        </div>
+      )}
+
+      {props.isAppliedView && (
+        <div className="self-end mb-1">
+          <div className="bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow inline-block">
+            ✓ Applied
+          </div>
         </div>
       )}
 
@@ -215,8 +225,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           {company} — {location}{' '}
           {isRemote && (
             <span className="ml-1 inline-block bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded mt-1 sm:mt-0">
-            Remote
-          </span>
+              Remote
+            </span>
           )}
         </p>
 
@@ -229,13 +239,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         )}
 
         {jobDescriptionBlock}
-
-
-        {props.isAppliedView && (
-          <div className="absolute top-4 right-4 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow">
-            ✓ Applied
-          </div>
-        )}
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-2 mt-4">
           {props.showApplyButton && isLoggedIn && applyLink ? (
@@ -251,8 +254,6 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             </span>
           ) : null}
 
-
-
           {isLoggedIn && !props.isAppliedView && (
             <button
               onClick={handleToggleFavorite}
@@ -263,12 +264,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
               {isFavorited ? 'Unfavorite' : 'Favorite'}
             </button>
           )}
-
         </div>
 
-          {postedAt && (
-            <p className="text-xs text-gray-400 mt-2">Posted {postedAt}</p>
-          )}
+        {postedAt && (
+          <p className="text-xs text-gray-400 mt-2">Posted {postedAt}</p>
+        )}
 
         {(sourceId || id) && (
           <ShareButtons
