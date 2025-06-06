@@ -9,7 +9,6 @@ interface Props {
   onRemoveApplied?: () => void;
 }
 
-
 export const ShareButtons: React.FC<Props> = ({
                                                 sourceId,
                                                 isAppliedView = false,
