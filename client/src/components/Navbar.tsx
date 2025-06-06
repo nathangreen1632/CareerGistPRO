@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 interface NavbarProps {
@@ -7,66 +7,87 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ token, handleLogout }) => {
-  return (
-    <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-      <Link to="/" className="text-2xl font-bold">
-        <span className="text-gray-800 dark:text-white">CareerGist</span>
-        <span className="text-gray-800 dark:text-red-500">PRO</span>
-      </Link>
+  const [menuOpen, setMenuOpen] = useState(false);
 
-      <nav className="flex space-x-6">
-        <Link
-          to="/"
-          className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
-        >
-          Home
+  const authedPages = [
+    { name: "Home", path: "/" },
+    { name: "Profile", path: "/profile" },
+    { name: "Favorites", path: "/favorites" },
+    { name: "Applied", path: "/applied" },
+  ];
+
+  const publicPages = [
+    { name: "Home", path: "/" },
+    { name: "Register", path: "/register" },
+    { name: "Login", path: "/login" },
+  ];
+
+  const pagesToShow = token ? authedPages : publicPages;
+
+  return (
+    <nav className="bg-gray-900 text-white shadow-md">
+      <div className="container mx-auto flex justify-between items-center px-6 py-4">
+        <Link to="/" className="text-xl font-bold tracking-wide">
+          CareerGist<span className="text-red-500">PRO</span>
         </Link>
 
-        {!token ? (
-          <>
+        <div className="hidden lg:flex space-x-6 items-center">
+          {pagesToShow.map((item) => (
             <Link
-              to="/register"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
+              key={item.path}
+              to={item.path}
+              className="hover:text-red-400 transition duration-200"
             >
-              Register
+              {item.name}
             </Link>
-            <Link
-              to="/login"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
-            >
-              Login
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/profile"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
-            >
-              Profile
-            </Link>
-            <Link
-              to="/favorites"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
-            >
-              Favorites
-            </Link>
-            <Link
-              to="/applied"
-              className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
-            >
-              Applied
-            </Link>
+          ))}
+
+          {token && (
             <button
               onClick={handleLogout}
-              className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-all duration-200 focus:outline-none"
+              className="hover:text-red-500 transition duration-200 focus:outline-none"
             >
               Logout
             </button>
-          </>
-        )}
-      </nav>
-    </div>
+          )}
+        </div>
+
+        <button
+          className="lg:hidden text-white text-3xl focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+        >
+          ☰
+        </button>
+      </div>
+
+      {menuOpen && (
+        <div className="lg:hidden bg-gray-800 px-6 pb-4 space-y-2">
+          {pagesToShow.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className="block py-2 hover:text-red-400 transition duration-200"
+              onClick={() => setMenuOpen(false)}
+            >
+              {item.name}
+            </Link>
+          ))}
+
+          {token && (
+            <button
+              onClick={() => {
+                setMenuOpen(false);
+                handleLogout();
+              }}
+              className="block w-full text-left py-2 hover:text-red-400 transition duration-200"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      )}
+    </nav>
   );
 };
 
