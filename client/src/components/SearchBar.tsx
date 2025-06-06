@@ -74,7 +74,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mt-8 mb-6 px-4">
+    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 px-4 mt-8 mb-6">
       <input
         type="text"
         placeholder="Job Title"
