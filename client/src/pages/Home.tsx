@@ -27,7 +27,7 @@ const Home: React.FC = () => {
   }, [fetchJobs, isLoading, hasMore]);
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 space-y-6">
+    <div className="px-4 sm:px-6 md:px-10 space-y-6 max-w-7xl mx-auto">
       <SearchBar />
 
       {isLoading && jobs.length === 0 && (
@@ -42,13 +42,12 @@ const Home: React.FC = () => {
         </div>
       )}
 
-      {/* Two-column grid container for JobCards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {jobs.map((job) => (
           <JobCard
             key={job.sourceId ?? job.id}
             id={job.sourceId ?? job.id}
-            sourceId={job.sourceId ?? job.id} // <-- crucial!
+            sourceId={job.sourceId ?? job.id}
             title={job.title}
             company={job.company}
             location={job.location}
