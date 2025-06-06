@@ -27,7 +27,8 @@ const JobDetailPage = () => {
   }
 
   const title = `${job.title} at ${job.company}`;
-  const description = job.summary ?? job.description?.slice(0, 200) ?? 'AI-enhanced job opportunity.';
+  const description =
+    job.summary ?? job.description?.slice(0, 200) ?? 'AI-enhanced job opportunity.';
   const image = 'https://www.careergistpro.com/og-default.jpg';
   const canonicalUrl = `https://www.careergistpro.com/job/${sourceId}`;
 
@@ -48,7 +49,7 @@ const JobDetailPage = () => {
         <meta name="twitter:image" content={image} />
       </Helmet>
 
-      <div className="p-4">
+      <div className="px-4 sm:px-6">
         <JobCard {...job} />
       </div>
     </>

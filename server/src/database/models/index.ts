@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 
+import { initSearchTermsModel, SearchTerms } from './SearchTerms.js';
 import { initUserModel, User } from './User.js';
 import { initFavoriteModel, Favorite } from './Favorites.js';
 import { initJobModel, Job } from './Job.js';
@@ -21,6 +22,7 @@ initUserModel(sequelize);
 initFavoriteModel(sequelize);
 initJobModel(sequelize);
 initUserAnalyticsModel(sequelize);
+initSearchTermsModel(sequelize);
 
 Favorite.belongsTo(Job, { foreignKey: 'jobId', targetKey: 'id' });
 Job.hasMany(Favorite, { foreignKey: 'jobId', sourceKey: 'id' });
@@ -33,6 +35,7 @@ const db = {
   Favorite,
   Job,
   UserAnalytics,
+  SearchTerms,
 };
 
 export default db;

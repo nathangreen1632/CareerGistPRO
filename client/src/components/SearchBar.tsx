@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import { LocateFixed } from 'lucide-react';
-import {API_BASE} from "../utils/api";
-
+import { API_BASE } from "../utils/api";
 
 const SearchBar: React.FC = () => {
   const { updateSearchFilters, resetSearchFilters } = useJobStore();
@@ -14,9 +13,12 @@ const SearchBar: React.FC = () => {
   const handleSearch = () => {
     updateSearchFilters({ title, location, radius });
 
-    // ✅ Log the search term to shared PyDataPRO analytics backend
     if (title.trim()) {
-      console.log("📨 Logging search query:", `${title} ${location}`.trim());
+      const payload = {
+        title: title.trim(),
+        location: location.trim(),
+        query: `${title} ${location}`.trim(),
+      };
 
       fetch(`${API_BASE}/analytics/search-history`, {
         method: "POST",
@@ -24,7 +26,7 @@ const SearchBar: React.FC = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ query: `${title} ${location}`.trim() }),
+        body: JSON.stringify(payload),
       }).catch((err) => {
         console.warn("🔁 Failed to log search term:", err);
       });
@@ -72,7 +74,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 mt-8 mb-6 px-4">
+    <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 px-4 mt-8 mb-6">
       <input
         type="text"
         placeholder="Job Title"

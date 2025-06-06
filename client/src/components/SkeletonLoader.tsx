@@ -16,7 +16,6 @@ const SkeletonLoader: React.FC<SkeletonLoaderProps> = ({
       className={`bg-gray-300 dark:bg-gray-700 animate-pulse ${height} ${width} ${rounded} rounded-md`}
     ></div>
   );
-
 };
 
 export default SkeletonLoader;

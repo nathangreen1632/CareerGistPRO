@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from '../components/JobCard';
-import {UnifiedJob} from "../types/jobTypes";
+import { UnifiedJob } from "../types/jobTypes";
 
 const AppliedTo: React.FC = () => {
   const { jobs } = useJobStore();
@@ -61,20 +61,31 @@ const AppliedTo: React.FC = () => {
       }
     };
 
-
     void fetchAppliedJobs();
-  }, [isLoggedIn, token]);
+  }, [isLoggedIn, token, jobs]);
 
   if (loading) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">Loading applied jobs...</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        Loading applied jobs...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center p-8 text-red-500">Error loading applied jobs: {error}</div>;
+    return (
+      <div className="text-center p-8 text-red-500">
+        Error loading applied jobs: {error}
+      </div>
+    );
   }
 
   if (!appliedJobs.length) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">You have not applied to any jobs yet.</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        You have not applied to any jobs yet.
+      </div>
+    );
   }
 
   const handleRemoveApplied = async (jobId: string) => {
@@ -100,11 +111,12 @@ const AppliedTo: React.FC = () => {
   );
 
   return (
-    <div className="px-4 sm:px-6 md:px-8 py-6 max-w-5xl mx-auto">
+    <div className="mx-auto w-full px-4 sm:px-6 py-8 max-w-7xl">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Jobs You've Applied To
       </h1>
-      <div className="space-y-6">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {uniqueAppliedJobs.map((job: UnifiedJob) => (
           <JobCard
             key={job.id}
@@ -125,7 +137,6 @@ const AppliedTo: React.FC = () => {
             showApplyButton={true}
             onRemoveApplied={() => handleRemoveApplied(job.id)}
           />
-
         ))}
       </div>
     </div>

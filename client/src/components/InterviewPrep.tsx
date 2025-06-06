@@ -12,7 +12,7 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
   const [selectedCompany, setSelectedCompany] = useState<string>(companies[0] ?? 'Google');
   const [refreshCount, setRefreshCount] = useState<number>(0);
   const [lockUntil, setLockUntil] = useState<number | null>(null);
-  const [isLoadingDynamic, setIsLoadingDynamic] = useState<boolean>(false); // 👈 New
+  const [isLoadingDynamic, setIsLoadingDynamic] = useState<boolean>(false);
 
   const {
     staticQuestions,
@@ -30,16 +30,16 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
     }
 
     if (refreshCount >= 10) {
-      const lockDuration = 2 * 60 * 60 * 1000; // 2 hours
+      const lockDuration = 2 * 60 * 60 * 1000;
       setLockUntil(now + lockDuration);
       alert('🔒 Refresh limit reached. Locked for 2 hours.');
       return;
     }
 
-    setIsLoadingDynamic(true); // ⏳ Start spinner
-    await refetchDynamicQuestions(); // 🔁 Dynamic only
+    setIsLoadingDynamic(true);
+    await refetchDynamicQuestions();
     setRefreshCount((prev) => prev + 1);
-    setIsLoadingDynamic(false); // ✅ Stop spinner
+    setIsLoadingDynamic(false);
   };
 
   return (
@@ -48,44 +48,43 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
         Interview Prep
       </h1>
 
-      {/* Dropdown Controls */}
-      <div className="flex gap-4 mb-4">
-        {/* Title Selector */}
-        <div className="flex flex-col">
+      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+        <div className="flex flex-col w-full sm:w-auto">
           <label className="text-sm text-gray-600 dark:text-gray-400 mb-1">Job Setting</label>
           <select
-            className="rounded-lg border px-3 py-2 dark:bg-gray-700 dark:text-white"
+            className="w-full rounded-lg border px-3 py-2 dark:bg-gray-700 dark:text-white"
             value={selectedTitle}
             onChange={(e) => setSelectedTitle(e.target.value)}
           >
             {titles.map((title, i) => (
-              <option key={i} value={title}>{title}</option>
+              <option key={i} value={title}>
+                {title}
+              </option>
             ))}
           </select>
         </div>
 
-        {/* Company Selector */}
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full sm:w-auto">
           <label className="text-sm text-gray-600 dark:text-gray-400 mb-1">Company</label>
           <select
-            className="rounded-lg border px-3 py-2 dark:bg-gray-700 dark:text-white"
+            className="w-full rounded-lg border px-3 py-2 dark:bg-gray-700 dark:text-white"
             value={selectedCompany}
             onChange={(e) => setSelectedCompany(e.target.value)}
           >
             {companies.map((company, i) => (
-              <option key={i} value={company}>{company}</option>
+              <option key={i} value={company}>
+                {company}
+              </option>
             ))}
           </select>
         </div>
       </div>
 
-      {/* Questions Panel */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-6">
         {isLoading ? (
           <p className="text-gray-500 dark:text-gray-400">Loading questions...</p>
         ) : (
           <>
-            {/* Static Section */}
             <div>
               <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Common Questions
@@ -99,7 +98,6 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
               </ul>
             </div>
 
-            {/* Dynamic Section */}
             <div>
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200">
@@ -112,7 +110,9 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
                   title="Refresh AI Questions"
                 >
                   <RotateCcw
-                    className={`w-5 h-5 transition-transform ${isLoadingDynamic ? 'animate-spin [animation-direction:reverse]' : ''}`}
+                    className={`w-5 h-5 transition-transform ${
+                      isLoadingDynamic ? 'animate-spin [animation-direction:reverse]' : ''
+                    }`}
                   />
                 </button>
               </div>

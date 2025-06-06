@@ -79,28 +79,24 @@ export const logSearchHistory = async (
   res: Response
 ): Promise<void> => {
   const userId = req.user?.id;
-  const { query, location, title, salaryMin, salaryMax } = req.body;
+  const { query } = req.body;
 
-  if (!userId) {
+  if (!userId || !query || typeof query !== "string") {
     res.status(204).end();
     return;
   }
 
   try {
-    await db.UserAnalytics.create({
+    await db.SearchTerms.create({
       userId,
-      action: 'search',
       query,
-      title,
-      location,
-      salaryMin: salaryMin ?? null,
-      salaryMax: salaryMax ?? null,
-      timestamp: new Date(),
     });
 
-    res.status(201).json({ message: 'Search history logged.' });
+    res.status(201).json({ message: 'Search term logged.' });
+    return;
   } catch (error: any) {
-    console.error('❌ Failed to log search history:', error);
-    res.status(500).json({ error: 'Failed to log search history.' });
+    console.error('❌ Failed to log search term:', error);
+    res.status(500).json({ error: 'Failed to log search term.' });
+    return;
   }
 };

@@ -52,7 +52,6 @@ const Favorites: React.FC = () => {
           isRemote: undefined,
         }));
 
-
         setFavoriteJobs(normalizedFavorites);
 
         for (const job of normalizedFavorites) {
@@ -77,15 +76,27 @@ const Favorites: React.FC = () => {
   }, [isLoggedIn, token, summarizeJob]);
 
   if (loading) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">Loading favorites...</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        Loading favorites...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center p-8 text-red-500">Error loading favorites: {error}</div>;
+    return (
+      <div className="text-center p-8 text-red-500">
+        Error loading favorites: {error}
+      </div>
+    );
   }
 
   if (favoriteJobs.length === 0) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">You have no favorited jobs yet.</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        You have no favorited jobs yet.
+      </div>
+    );
   }
 
   const uniqueFavoriteJobs = Array.from(
@@ -93,34 +104,33 @@ const Favorites: React.FC = () => {
   );
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6 max-w-6xl mx-auto">
+    <div className="mx-auto w-full px-4 sm:px-6 py-8 max-w-7xl">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Your Favorited Jobs
       </h1>
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {uniqueFavoriteJobs.map((job) => (
-          <div key={job.id} className="relative">
-            <JobCard
-              id={job.id}
-              title={job.title}
-              company={job.company}
-              location={job.location}
-              description={job.description}
-              summary={job.summary}
-              applyLink={job.applyLink}
-              salaryMin={job.salaryMin}
-              salaryMax={job.salaryMax}
-              salaryPeriod={job.salaryPeriod}
-              postedAt={job.postedAt ?? undefined}
-              logoUrl={job.logoUrl}
-              isFavorited={true}
-              showApplyButton={true}
-              onUnfavorite={() =>
-                setFavoriteJobs((prev) => prev.filter((j: UnifiedJob): boolean => j.id !== job.id))
-              }
-            />
-          </div>
+          <JobCard
+            key={job.id}
+            id={job.id}
+            title={job.title}
+            company={job.company}
+            location={job.location}
+            description={job.description}
+            summary={job.summary}
+            applyLink={job.applyLink}
+            salaryMin={job.salaryMin}
+            salaryMax={job.salaryMax}
+            salaryPeriod={job.salaryPeriod}
+            postedAt={job.postedAt ?? undefined}
+            logoUrl={job.logoUrl}
+            isFavorited={true}
+            showApplyButton={true}
+            onUnfavorite={() =>
+              setFavoriteJobs((prev) => prev.filter((j: UnifiedJob) => j.id !== job.id))
+            }
+          />
         ))}
       </div>
     </div>

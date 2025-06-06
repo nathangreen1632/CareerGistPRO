@@ -1,5 +1,3 @@
-// client/src/pages/Register.tsx
-
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import toast from "react-hot-toast";
@@ -49,18 +47,20 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gray-50 dark:bg-gray-900">
       <form
         onSubmit={handleRegister}
-        className="flex flex-col bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 space-y-4 w-full max-w-md"
+        className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8 space-y-4"
       >
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">Register</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
+          Register
+        </h2>
 
         <input
           type="text"
           autoComplete="given-name"
           placeholder="First Name"
-          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
           required
@@ -70,7 +70,7 @@ const Register: React.FC = () => {
           type="text"
           autoComplete="family-name"
           placeholder="Last Name"
-          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
           required
@@ -80,13 +80,12 @@ const Register: React.FC = () => {
           type="email"
           autoComplete="email"
           placeholder="Email"
-          className="p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-3 border border-gray-300 dark:border-gray-600 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
 
-        {/* Password Input */}
         <div className="relative">
           <input
             type={showPassword ? 'text' : 'password'}
@@ -107,7 +106,6 @@ const Register: React.FC = () => {
           </button>
         </div>
 
-        {/* Confirm Password Input */}
         <div className="relative">
           <input
             type={showConfirmPassword ? 'text' : 'password'}
@@ -134,7 +132,7 @@ const Register: React.FC = () => {
 
         <button
           type="submit"
-          className="p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold"
+          className="w-full p-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
         >
           Register
         </button>

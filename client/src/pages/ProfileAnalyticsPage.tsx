@@ -15,13 +15,10 @@ export const ProfileAnalyticsPage = () => {
 
   return (
     <div className="px-4 sm:px-6 md:px-10 py-6 max-w-7xl mx-auto space-y-12">
-
-      {/* 🧠 Interview Section */}
       <section className="w-full">
         <InterviewPrep titles={titles} companies={companies} />
       </section>
 
-      {/* 📊 Analytics Section */}
       <section className="space-y-10 w-full">
         <h1 className="text-3xl font-bold text-center text-gray-800 dark:text-white">
           Job Analytics
@@ -45,7 +42,6 @@ export const ProfileAnalyticsPage = () => {
         </div>
       </section>
 
-      {/* 🎯 Contextual Job Recommendations */}
       <section className="w-full">
         <RecommendedJobs />
       </section>
