@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from '../components/JobCard';
-import {UnifiedJob} from "../types/jobTypes";
+import { UnifiedJob } from "../types/jobTypes";
 
 const AppliedTo: React.FC = () => {
   const { jobs } = useJobStore();
@@ -61,20 +61,31 @@ const AppliedTo: React.FC = () => {
       }
     };
 
-
     void fetchAppliedJobs();
-  }, [isLoggedIn, token]);
+  }, [isLoggedIn, token, jobs]);
 
   if (loading) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">Loading applied jobs...</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        Loading applied jobs...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center p-8 text-red-500">Error loading applied jobs: {error}</div>;
+    return (
+      <div className="text-center p-8 text-red-500">
+        Error loading applied jobs: {error}
+      </div>
+    );
   }
 
   if (!appliedJobs.length) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">You have not applied to any jobs yet.</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        You have not applied to any jobs yet.
+      </div>
+    );
   }
 
   const handleRemoveApplied = async (jobId: string) => {
@@ -100,7 +111,7 @@ const AppliedTo: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="mx-auto w-full px-4 sm:px-6 py-8 max-w-7xl">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Jobs You've Applied To
       </h1>
@@ -130,7 +141,6 @@ const AppliedTo: React.FC = () => {
       </div>
     </div>
   );
-
 };
 
 export default AppliedTo;
