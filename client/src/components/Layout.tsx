@@ -8,17 +8,14 @@ const Layout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      {/* Navbar */}
       <Navbar token={token} handleLogout={logout} />
 
-      {/* Main Content */}
-      <main className="flex-1 container mx-auto px-6 py-8">
+      <main className="flex-1 mx-auto w-full px-4 sm:px-6 py-8 max-w-7xl">
         <Outlet />
       </main>
 
-      {/* Footer */}
       <footer className="bg-white dark:bg-gray-800 shadow-inner py-4">
-        <div className="container mx-auto text-center text-gray-500 dark:text-gray-400">
+        <div className="mx-auto w-full px-4 sm:px-6 text-center text-gray-500 dark:text-gray-400 max-w-7xl">
           © {new Date().getFullYear()} CareerGist — All rights reserved.
         </div>
       </footer>
