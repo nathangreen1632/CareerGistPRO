@@ -52,7 +52,6 @@ const Favorites: React.FC = () => {
           isRemote: undefined,
         }));
 
-
         setFavoriteJobs(normalizedFavorites);
 
         for (const job of normalizedFavorites) {
@@ -77,15 +76,27 @@ const Favorites: React.FC = () => {
   }, [isLoggedIn, token, summarizeJob]);
 
   if (loading) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">Loading favorites...</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        Loading favorites...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="text-center p-8 text-red-500">Error loading favorites: {error}</div>;
+    return (
+      <div className="text-center p-8 text-red-500">
+        Error loading favorites: {error}
+      </div>
+    );
   }
 
   if (favoriteJobs.length === 0) {
-    return <div className="text-center p-8 text-gray-600 dark:text-gray-400">You have no favorited jobs yet.</div>;
+    return (
+      <div className="text-center p-8 text-gray-600 dark:text-gray-400">
+        You have no favorited jobs yet.
+      </div>
+    );
   }
 
   const uniqueFavoriteJobs = Array.from(
@@ -93,7 +104,7 @@ const Favorites: React.FC = () => {
   );
 
   return (
-    <div className="container mx-auto px-6 py-8">
+    <div className="mx-auto w-full px-4 sm:px-6 py-8 max-w-7xl">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
         Your Favorited Jobs
       </h1>
@@ -124,7 +135,6 @@ const Favorites: React.FC = () => {
       </div>
     </div>
   );
-
 };
 
 export default Favorites;
