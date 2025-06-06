@@ -1,5 +1,3 @@
-// client/src/pages/Login.tsx
-
 import React, { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import toast from "react-hot-toast";
@@ -25,7 +23,7 @@ const Login: React.FC = () => {
       if (response.ok && data.token) {
         login(data.token);
         toast.success('Logged in successfully!');
-        navigate('/'); // Redirect to homepage or dashboard
+        navigate('/');
       } else {
         toast.error(data.message ?? 'Login failed');
       }
@@ -36,12 +34,14 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gray-50 dark:bg-gray-900">
       <form
         onSubmit={handleLogin}
         className="w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 sm:p-8 space-y-5"
       >
-        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
+          Login
+        </h2>
 
         <input
           type="email"
@@ -71,7 +71,6 @@ const Login: React.FC = () => {
       </form>
     </div>
   );
-
 };
 
 export default Login;
