@@ -89,7 +89,14 @@ const Favorites: React.FC = () => {
       redirectToLogin();
       return;
     }
-    void fetchFavorites();
+
+    (async (): Promise<void> => {
+      try {
+        await fetchFavorites();
+      } catch (err) {
+        console.error('Unexpected error in fetchFavorites:', err);
+      }
+    })();
   }, [isLoggedIn, redirectToLogin, fetchFavorites]);
 
   if (loading) {
