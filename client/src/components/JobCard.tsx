@@ -241,18 +241,20 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         {jobDescriptionBlock}
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-6 gap-2 mt-4">
-          {props.showApplyButton && isLoggedIn && applyLink ? (
+          {props.showApplyButton && isLoggedIn && applyLink && (
             <button
               onClick={handleApplyClick}
               className="text-sm text-blue-500 hover:underline"
             >
               Apply Now
             </button>
-          ) : props.showApplyButton ? (
+          )}
+
+          {props.showApplyButton && (!isLoggedIn || !applyLink) && (
             <span className="text-sm text-gray-400 dark:text-gray-500">
-              {isLoggedIn ? 'No job link available' : 'Login to apply'}
+          {isLoggedIn ? 'No job link available' : 'Login to apply'}
             </span>
-          ) : null}
+          )}
 
           {isLoggedIn && !props.isAppliedView && (
             <button
