@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 interface NavbarProps {
   token: string | null;
@@ -24,22 +24,29 @@ const Navbar: React.FC<NavbarProps> = ({ token, handleLogout }) => {
 
   const pagesToShow = token ? authedPages : publicPages;
 
+  const linkClasses = (isActive: boolean) =>
+    [
+      isActive ? "text-red-500" : "hover:text-red-400",
+      "transition duration-200",
+    ].join(" ");
+
   return (
     <nav className="bg-gray-900 text-white shadow-md">
       <div className="container mx-auto flex justify-between items-center px-6 py-4">
-        <Link to="/" className="text-xl font-bold tracking-wide">
+        <NavLink to="/" className="text-xl font-bold tracking-wide">
           CareerGist<span className="text-red-500">PRO</span>
-        </Link>
+        </NavLink>
 
         <div className="hidden lg:flex space-x-6 items-center">
           {pagesToShow.map((item) => (
-            <Link
+            <NavLink
               key={item.path}
               to={item.path}
-              className="hover:text-red-400 transition duration-200"
+              end
+              className={({ isActive }) => linkClasses(isActive)}
             >
               {item.name}
-            </Link>
+            </NavLink>
           ))}
 
           {token && (
@@ -55,7 +62,9 @@ const Navbar: React.FC<NavbarProps> = ({ token, handleLogout }) => {
         <button
           className="lg:hidden text-white text-3xl focus:outline-none"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-label={
+            menuOpen ? "Close navigation menu" : "Open navigation menu"
+          }
         >
           ☰
         </button>
@@ -64,14 +73,15 @@ const Navbar: React.FC<NavbarProps> = ({ token, handleLogout }) => {
       {menuOpen && (
         <div className="lg:hidden bg-gray-800 px-6 pb-4 space-y-2">
           {pagesToShow.map((item) => (
-            <Link
+            <NavLink
               key={item.path}
               to={item.path}
-              className="block py-2 hover:text-red-400 transition duration-200"
+              end
+              className={({ isActive }) => linkClasses(isActive)}
               onClick={() => setMenuOpen(false)}
             >
               {item.name}
-            </Link>
+            </NavLink>
           ))}
 
           {token && (

@@ -50,14 +50,17 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
 
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <div className="flex flex-col w-full sm:w-auto">
-          <label className="text-sm text-gray-600 dark:text-gray-400 mb-1">Job Setting</label>
+          <label htmlFor="jobSetting" className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+            Job Setting
+          </label>
           <select
+            id="jobSetting"
             className="w-full rounded-lg border px-3 py-2 dark:bg-gray-700 dark:text-white"
             value={selectedTitle}
             onChange={(e) => setSelectedTitle(e.target.value)}
           >
-            {titles.map((title, i) => (
-              <option key={i} value={title}>
+            {titles.map((title) => (
+              <option key={title} value={title}>
                 {title}
               </option>
             ))}
@@ -65,14 +68,17 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
         </div>
 
         <div className="flex flex-col w-full sm:w-auto">
-          <label className="text-sm text-gray-600 dark:text-gray-400 mb-1">Company</label>
+          <label htmlFor="company" className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+            Company
+          </label>
           <select
+            id="company"
             className="w-full rounded-lg border px-3 py-2 dark:bg-gray-700 dark:text-white"
             value={selectedCompany}
             onChange={(e) => setSelectedCompany(e.target.value)}
           >
-            {companies.map((company, i) => (
-              <option key={i} value={company}>
+            {companies.map((company) => (
+              <option key={company} value={company}>
                 {company}
               </option>
             ))}
@@ -90,8 +96,8 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
                 Common Questions
               </h3>
               <ul className="list-disc list-inside space-y-1">
-                {staticQuestions.map((q, i) => (
-                  <li key={`static-${i}`} className="text-gray-700 dark:text-gray-300">
+                {staticQuestions.map((q) => (
+                  <li key={`static-${q}`} className="text-gray-700 dark:text-gray-300">
                     {q}
                   </li>
                 ))}
@@ -119,8 +125,8 @@ export const InterviewPrep = ({ titles, companies }: Props) => {
 
               {dynamicQuestions.length > 0 ? (
                 <ul className="list-disc list-inside space-y-1">
-                  {dynamicQuestions.map((q, i) => (
-                    <li key={`dynamic-${i}`} className="text-gray-700 dark:text-gray-300">
+                  {dynamicQuestions.map((q) => (
+                    <li key={`dynamic-${q}`} className="text-gray-700 dark:text-gray-300">
                       {q}
                     </li>
                   ))}
