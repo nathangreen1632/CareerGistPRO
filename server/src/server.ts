@@ -1,8 +1,7 @@
-// server.ts
-
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import asyncHandler from 'express-async-handler';
 import db from './database/models/index.js';
@@ -22,7 +21,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
-// 📌 Load and verify BASE_URL from env
 const BASE_URL = process.env.BASE_URL;
 if (!BASE_URL) {
   console.error('❌ Missing BASE_URL in .env');
@@ -31,10 +29,8 @@ if (!BASE_URL) {
 
 const app: Application = express();
 
-// 🔒 Hide Express fingerprint
 app.disable('x-powered-by');
 
-// 🛠️ Configure EJS view engine for safe HTML escaping
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -42,17 +38,14 @@ const PORT = process.env.PORT ?? 3001;
 
 app.use(express.json());
 
-// Serve the OG fallback image
 app.get('/og-default.jpg', (_req, res) => {
   res.setHeader('Content-Type', 'image/jpeg');
   res.sendFile(path.join(__dirname, '../../client/public/og-default.jpg'));
 });
 
-// Static assets
 app.use(express.static(path.join(__dirname, '../../client/public')));
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
-// API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/summaries', summaryRoutes);
@@ -62,35 +55,49 @@ app.use('/api/favorites', authenticateToken, favoriteRoutes);
 app.use('/api/interview', authenticateToken, interviewRoutes);
 app.use('/api/recommendations', authenticateToken, recommendationRoutes);
 
-// SSR share endpoint (uses EJS to auto-escape user data)
-// Replace your entire /share/:sourceId handler with this:
+app.get(
+  '/share/:sourceId',
+  asyncHandler(async (req: Request, res: Response) => {
+    const { sourceId } = req.params;
+    const job = await db.Job.findOne({ where: { sourceId } });
+    if (!job) {
+      res.status(404).send('Job not found');
+      return;
+    }
 
-app.get('/share/:sourceId', asyncHandler(async (req, res) => {
-  const { sourceId } = req.params;
-  const job = await db.Job.findOne({ where: { sourceId } });
-  if (!job) {
-    res.status(404).send('Job not found');
-    return;
-  }
+    const safeId      = encodeURIComponent(sourceId);
+    const jobUrl      = `${BASE_URL}/job/${safeId}`;
+    const ogImage     = `${BASE_URL}/og-default.jpg?v=2`;
+    const title       = `${job.title} at ${job.company}`;
+    const description =
+      job.summary
+      ?? job.description?.slice(0, 200)
+      ?? 'AI-enhanced job opportunity.';
 
-  const safeId = encodeURIComponent(sourceId);
-  const jobUrl  = `${BASE_URL}/job/${safeId}`;
-  const ogImage = `${BASE_URL}/og-default.jpg?v=2`;
-  const title      = `${job.title} at ${job.company}`;
-  const description =
-    job.summary
-    ?? job.description?.slice(0, 200)
-    ?? 'AI-enhanced job opportunity.';
+    try {
+      // DEBUG: show where Express is looking for views, and what files exist
+      console.log('🔍 Views directory:', path.join(__dirname, 'views'));
+      console.log('🔍 Available view files:', fs.readdirSync(path.join(__dirname, 'views')));
 
-  // EJS will HTML-escape these for us
-  res
-    .status(200)
-    .render('share', { jobUrl, ogImage, title, description, clientRedirect: jobUrl });
-}));
+      res
+        .status(200)
+        .render('share', {
+          jobUrl,
+          ogImage,
+          title,
+          description,
+          clientRedirect: jobUrl,
+        });
+      return;
+    } catch (err: any) {
+      console.error('❌ Error in share.render:', err.stack ?? err.message);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+  })
+);
 
-
-// Fallback to client-side routing
-app.get('*', function (_req, res): void {
+app.get('*', (_req, res): void => {
   res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });
 
