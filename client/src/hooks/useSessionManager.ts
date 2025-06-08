@@ -35,9 +35,17 @@ export const useSessionManager = () => {
 
   const handleExtend = useCallback(() => {
     logoutRef.current = false;
-    void refreshToken();
-    setShowModal(false);
-    setCountdown(COUNTDOWN_LIMIT / 1000);
+
+    (async () => {
+      try {
+        await refreshToken();
+      } catch (err) {
+        console.error('❌ Failed to extend session:', err);
+      }
+
+      setShowModal(false);
+      setCountdown(COUNTDOWN_LIMIT / 1000);
+    })();
   }, [refreshToken]);
 
   const handleLogout = useCallback(() => {
