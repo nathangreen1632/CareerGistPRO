@@ -1,5 +1,3 @@
-// client/src/components/JobList.tsx
-
 import { useEffect, useRef, useCallback } from 'react';
 import { useJobStore } from '../store/useJobStore';
 import JobCard from './JobCard';
@@ -14,28 +12,43 @@ const JobList = () => {
     if (isLoading) return;
     if (observer.current) observer.current.disconnect();
 
-    observer.current = new IntersectionObserver((entries) => {
+    observer.current = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting && hasMore) {
-        void fetchJobs(); // ✅ Will refetch using the current searchFilters automatically
+        try {
+          await fetchJobs();
+        } catch (err) {
+          console.error('Error fetching more jobs:', err);
+        }
       }
     });
 
     if (node) observer.current.observe(node);
   }, [isLoading, hasMore, fetchJobs]);
 
+
   useEffect(() => {
-    // 👇 When search filters change, reset jobs and refetch from page 1
-    void fetchJobs();
+    (async () => {
+      try {
+        await fetchJobs();
+      } catch (err) {
+        console.error('Error fetching jobs:', err);
+      }
+    })();
   }, [searchFilters]);
 
   useEffect(() => {
-    // ✅ Summarize only jobs without a summary
-    jobs.forEach((job) => {
-      if (!job.summary && job.description) {
-        void summarizeJob(job.id, job.description);
+    (async () => {
+      try {
+        const toSummarize = jobs.filter(j => !j.summary && j.description);
+        await Promise.all(
+          toSummarize.map(j => summarizeJob(j.id, j.description))
+        );
+      } catch (err) {
+        console.error('Error summarizing jobs:', err);
       }
-    });
+    })();
   }, [jobs, summarizeJob]);
+
 
   return (
     <div className="flex flex-col items-center space-y-4 py-8 px-4 sm:px-6">
@@ -65,9 +78,9 @@ const JobList = () => {
 
       {isLoading && (
         <div className="flex flex-col items-center space-y-4 w-full px-4">
-          {[...Array(3)].map((_, index) => (
+          {[...Array(3)].map((_) => (
             <div
-              key={index}
+              key={_}
               className="bg-white dark:bg-gray-900 p-4 sm:p-6 rounded-2xl shadow-md w-full max-w-full sm:max-w-2xl md:max-w-3xl"
             >
               <SkeletonLoader height="h-6" width="w-1/2" />
