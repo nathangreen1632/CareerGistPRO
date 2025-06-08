@@ -63,65 +63,77 @@ const JobCard: React.FC<JobCardProps> = (props) => {
 
     try {
       if (isFavorited) {
-        const response = await fetch(`/api/favorites/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (props.onUnfavorite) {
-          props.onUnfavorite();
-        }
-
-        if (response.status === 401) {
-          toast.error('Session expired. Please login again.');
-          return;
-        }
-
-        if (!response.ok) {
-          console.error('Unfavorite request failed:', await response.text());
-          toast.error('Unable to remove favorite. Please try again.');
-          return;
-        }
-
-        setIsFavorited(false);
-        toast.success(`${title} unfavorited!`);
+        await removeFavorite();
       } else {
-        const response = await fetch('/api/favorites', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            jobId: sourceId ?? id,
-            title,
-            company,
-            location,
-            description,
-            applyLink,
-            summary: summary ?? '',
-            logoUrl: logoUrl ?? null,
-            postedAt: postedAt ?? null,
-            salaryMin: typeof salaryMin === 'number' ? salaryMin : 0,
-            salaryMax: typeof salaryMax === 'number' ? salaryMax : 0,
-            salaryPeriod: salaryPeriod ?? 'unknown',
-          }),
-        });
-
-        if (!response.ok) {
-          console.error('Favorite request failed:', await response.text());
-          toast.error('Unable to save favorite. Please try again.');
-          return;
-        }
-
-        setIsFavorited(true);
-        toast.success(`${title} Favorited!`);
+        await addFavorite();
       }
-    } catch (error) {
-      console.error('Unexpected error in favorite toggle:', error);
+    } catch (err) {
+      console.error('Unexpected error in favorite toggle:', err);
       toast.error('Something went wrong. Please try again later.');
     }
   };
+
+  async function removeFavorite() {
+    const res = await fetch(`/api/favorites/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    // 401 -> session expired
+    if (res.status === 401) {
+      toast.error('Session expired. Please login again.');
+      return;
+    }
+
+    // other failures
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error('Unfavorite failed:', msg);
+      toast.error('Unable to remove favorite. Please try again.');
+      return;
+    }
+
+    props.onUnfavorite?.();
+    setIsFavorited(false);
+    toast.success(`${title} unfavorited!`);
+  }
+
+  async function addFavorite() {
+    const payload = {
+      jobId: sourceId ?? id,
+      title,
+      company,
+      location,
+      description,
+      applyLink,
+      summary: summary ?? '',
+      logoUrl: logoUrl ?? null,
+      postedAt: postedAt ?? null,
+      salaryMin: typeof salaryMin === 'number' ? salaryMin : 0,
+      salaryMax: typeof salaryMax === 'number' ? salaryMax : 0,
+      salaryPeriod: salaryPeriod ?? 'unknown',
+    };
+
+    const res = await fetch('/api/favorites', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      console.error('Favorite failed:', msg);
+      toast.error('Unable to save favorite. Please try again.');
+      return;
+    }
+
+    setIsFavorited(true);
+    toast.success(`${title} Favorited!`);
+  }
+
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -169,7 +181,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
     window.open(applyLink, '_blank');
   };
 
-  let jobDescriptionBlock: JSX.Element;
+  let jobDescriptionBlock: React.ReactNode;
 
   if (summary || description) {
     jobDescriptionBlock = (
