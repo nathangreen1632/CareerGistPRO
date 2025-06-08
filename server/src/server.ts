@@ -90,7 +90,7 @@ app.get('/share/:sourceId', asyncHandler(async (req, res) => {
 
 
 // Fallback to client-side routing
-app.get('*', (_req, res) => {
+app.get('*', function (_req, res): void {
   res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
 });
 
