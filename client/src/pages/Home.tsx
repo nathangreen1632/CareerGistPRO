@@ -8,23 +8,35 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (jobs.length === 0) {
-      void fetchJobs();
+      (async () => {
+        try {
+          await fetchJobs();
+        } catch (err) {
+          console.error('Error fetching jobs on mount:', err);
+        }
+      })();
     }
   }, [jobs.length, fetchJobs]);
 
+
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = async () => {
       const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
       const isNearBottom = scrollTop + clientHeight >= scrollHeight * 0.9;
 
       if (isNearBottom && !isLoading && hasMore) {
-        void fetchJobs();
+        try {
+          await fetchJobs();
+        } catch (err) {
+          console.error('Error fetching jobs on scroll:', err);
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [fetchJobs, isLoading, hasMore]);
+  }, [isLoading, hasMore, fetchJobs]);
+
 
   return (
     <div className="px-4 sm:px-6 md:px-10 space-y-6 max-w-7xl mx-auto">
