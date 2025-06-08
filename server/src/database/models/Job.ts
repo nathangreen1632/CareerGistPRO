@@ -69,7 +69,8 @@ export function initJobModel(sequelize: Sequelize): void {
       },
       sourceId: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
+        unique: true,
       },
       title: {
         type: DataTypes.STRING,
