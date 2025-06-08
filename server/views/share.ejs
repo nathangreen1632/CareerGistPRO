@@ -1,0 +1,21 @@
+<% /* global jobUrl, ogImage, title, description, clientRedirect */ %>
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta property="og:type"        content="website"/>
+    <meta property="og:url"         content="<%= jobUrl %>"/>
+    <meta property="og:title"       content="<%= title %>"/>
+    <meta property="og:description" content="<%= description %>"/>
+    <meta property="og:image"       content="<%= ogImage %>"/>
+    <meta name="twitter:card"        content="summary_large_image"/>
+    <meta name="twitter:title"       content="<%= title %>"/>
+    <meta name="twitter:description" content="<%= description %>"/>
+    <meta name="twitter:image"       content="<%= ogImage %>"/>
+
+    <meta http-equiv="refresh" content="0;url=<%= clientRedirect %>">
+    <title><%= title %></title>
+</head>
+<body>
+Redirecting… If you are not forwarded, <a href="<%= clientRedirect %>">click here</a>.
+</body>
+</html>
