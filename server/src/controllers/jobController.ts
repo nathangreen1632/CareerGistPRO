@@ -31,10 +31,12 @@ export const getPaginatedJobs = async (req: Request, res: Response): Promise<voi
 
   const persistJobs = async (jobs: any[]) => {
     for (const job of jobs) {
-      const exists = await db.Job.findOne({ where: { sourceId: job.id } });
+      const sourceId = job.id?.toString() ?? '';
+      const exists = await db.Job.findOne({ where: { sourceId } });
+
       if (!exists) {
         await db.Job.create({
-          sourceId: job.id,
+          sourceId,
           title: job.title,
           description: job.description ?? '',
           company: job.company?.display_name ?? '',
@@ -129,7 +131,9 @@ export const getJobBySourceId = async (req: Request, res: Response): Promise<voi
   const { sourceId } = req.params;
 
   try {
-    const job = await db.Job.findOne({ where: { sourceId } });
+    const job = await db.Job.findOne({
+      where: { sourceId: sourceId.toString() },
+    });
 
     if (!job) {
       res.status(404).json({ error: 'Job not found' });
